@@ -3,7 +3,7 @@
   *  É nesta seção que se deve incluir imports e declaração de pacotes.
   *  Neste exemplo não temos nada a incluir nesta seção.
   */
-  
+package scanner;
 %%
 
 %unicode

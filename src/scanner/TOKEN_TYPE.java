@@ -1,3 +1,5 @@
+package scanner;
+
 //TIPOS DE TOKEN
 public enum TOKEN_TYPE {
     INT,

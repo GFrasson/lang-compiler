@@ -1,6 +1,7 @@
 import java.io.FileReader;
 import java.io.IOException;
 import scanner.LangScanner;
+import scanner.Token;
 
 public class App {
     public static void main(String args[]) throws IOException {
@@ -12,6 +13,6 @@ public class App {
             token = langScanner.nextToken();
         }
 
-        System.out.println("Total de tokens lidos " + langScanner.readedTokens());
+        System.out.println("Total de tokens lidos " + langScanner.getTokensAmount());
     }
 }

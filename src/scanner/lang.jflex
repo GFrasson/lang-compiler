@@ -31,7 +31,7 @@ package scanner;
 
     private Token symbol(TOKEN_TYPE tokenType, Object value) {
         tokensAmount++;
-        return new Token(tokenType, value, yyline + 1, yycolumn + 1);
+        return new Token(tokenType, yytext(), value, yyline + 1, yycolumn + 1);
     }
 %}
 
@@ -44,11 +44,11 @@ package scanner;
   EndOfLine  = \r | \n | \r\n
   WhiteSpace     = {EndOfLine} | [ \t\f]
   Integer      = [:digit:] [:digit:]*  // [0-9][0-9]*
-  Float = [:digit:]* . {Integer}  // [0-9]*.[0-9][0-9]*
-  Identifier = [:lowercase:] ([:lowercase:] | [:uppercase:] | [:digit:] | '_')*  // [a-z] ([a-z] | [A-Z] | [0-9] | _)*
-  TypeName = [:uppercase:] ([:lowercase:] | [:uppercase:] | [:digit:] | '_')*
+  Float = [:digit:]* "." {Integer}  // [0-9]*.[0-9][0-9]*
+  Identifier = [:lowercase:] ([:lowercase:] | [:uppercase:] | [:digit:] | "_")*  // [a-z] ([a-z] | [A-Z] | [0-9] | _)*
+  TypeName = [:uppercase:] ([:lowercase:] | [:uppercase:] | [:digit:] | "_")*
   // Character = '\'' ([:lowercase:] | [:uppercase:] | [:digit:] | \n | \t \ | \b | \r | '\\') '\''  // TODO
-  Character = '\'' (. | \r | \n) '\''  // TODO
+  Character = "'" (. | "\\r" | "\\n" | "\\t" | "\\b" | "\\\\") "'"  // TODO
   Boolean = "true" | "false"
   Null = "null"
   LineComment = "--" (.)* {EndOfLine}
@@ -58,10 +58,10 @@ package scanner;
 %%
 
 <YYINITIAL>{
-    {Integer}       { return symbol(TOKEN_TYPE.INT, Integer.parseInt(yytext())); }
     {Float}         { return symbol(TOKEN_TYPE.FLOAT, Float.parseFloat(yytext())); }
-    {Boolean}       { return symbol(TOKEN_TYPE.BOOLEAN); }
-    {Null}          { return symbol(TOKEN_TYPE.NULL); }
+    {Integer}       { return symbol(TOKEN_TYPE.INT, Integer.parseInt(yytext())); }
+    {Boolean}       { return symbol(TOKEN_TYPE.BOOLEAN, "true".compareTo(yytext()) == 0 ? true : false); }
+    {Null}          { return symbol(TOKEN_TYPE.NULL, null); }
     {Identifier}    { return symbol(TOKEN_TYPE.ID); }
     {TypeName}      { return symbol(TOKEN_TYPE.TYPE_NAME); }
     {Character}     { return symbol(TOKEN_TYPE.CHAR); }

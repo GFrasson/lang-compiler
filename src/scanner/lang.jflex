@@ -46,9 +46,9 @@ package scanner;
   Integer      = [:digit:] [:digit:]*  // [0-9][0-9]*
   Float = [:digit:]* "." {Integer}  // [0-9]*.[0-9][0-9]*
   Identifier = [:lowercase:] ([:lowercase:] | [:uppercase:] | [:digit:] | "_")*  // [a-z] ([a-z] | [A-Z] | [0-9] | _)*
-  TypeName = [:uppercase:] ([:lowercase:] | [:uppercase:] | [:digit:] | "_")*
+  TypeName = [:uppercase:] ([:lowercase:] | [:uppercase:] | [:digit:] | "_")* // [A-Z] ([a-z] | [A-Z] | [0-9] | _)*
   // Character = '\'' ([:lowercase:] | [:uppercase:] | [:digit:] | \n | \t \ | \b | \r | '\\') '\''  // TODO
-  Character = "'" (. | "\\r" | "\\n" | "\\t" | "\\b" | "\\\\") "'"  // TODO
+  Character = "'" (. | "\\r" | "\\n" | "\\t" | "\\b" | "\\\\" | "\\'") "'"  // TODO
   Boolean = "true" | "false"
   Null = "null"
   LineComment = "--" (.)* {EndOfLine}
@@ -62,6 +62,14 @@ package scanner;
     {Integer}       { return symbol(TOKEN_TYPE.INT, Integer.parseInt(yytext())); }
     {Boolean}       { return symbol(TOKEN_TYPE.BOOLEAN, "true".compareTo(yytext()) == 0 ? true : false); }
     {Null}          { return symbol(TOKEN_TYPE.NULL, null); }
+    "if"            { return symbol(TOKEN_TYPE.IF); }
+    "else"          { return symbol(TOKEN_TYPE.ELSE); }
+    "data"          { return symbol(TOKEN_TYPE.DATA); }
+    "iterate"       { return symbol(TOKEN_TYPE.ITERATE); }
+    "return"        { return symbol(TOKEN_TYPE.RETURN); }
+    "print"         { return symbol(TOKEN_TYPE.PRINT); }
+    "read"          { return symbol(TOKEN_TYPE.READ); }
+    "new"          { return symbol(TOKEN_TYPE.NEW); }
     {Identifier}    { return symbol(TOKEN_TYPE.ID); }
     {TypeName}      { return symbol(TOKEN_TYPE.TYPE_NAME); }
     {Character}     { return symbol(TOKEN_TYPE.CHAR); }
@@ -96,6 +104,8 @@ package scanner;
 <COMMENT>{
    "-}"     { yybegin(YYINITIAL); } 
    [^"-}"]* {}
+   "-"      {}
+   "}"      {}
 }
 
 [^]                 { throw new RuntimeException("Illegal character <"+yytext()+">"); }

@@ -968,7 +968,14 @@ public class LangScanner {
 
       if (zzInput == YYEOF && zzStartRead == zzCurrentPos) {
         zzAtEOF = true;
+            switch (zzLexicalState) {
+            case COMMENT: {
+              throw new RuntimeException("Comment block did not close");
+            }  // fall though
+            case 86: break;
+            default:
         return null;
+        }
       }
       else {
         switch (zzAction < 0 ? zzAction : ZZ_ACTION[zzAction]) {
@@ -1163,7 +1170,7 @@ public class LangScanner {
             // fall through
           case 78: break;
           case 37:
-            { return symbol(TOKEN_TYPE.NULL, null);
+            { return symbol(TOKEN_TYPE.NULL);
             }
             // fall through
           case 79: break;

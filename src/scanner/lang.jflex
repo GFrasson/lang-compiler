@@ -71,7 +71,7 @@ import java.util.HashMap;
     {Float}         { return symbol(TOKEN_TYPE.FLOAT, Float.parseFloat(yytext())); }
     {Integer}       { return symbol(TOKEN_TYPE.INT, Integer.parseInt(yytext())); }
     {Boolean}       { return symbol(TOKEN_TYPE.BOOLEAN, "true".compareTo(yytext()) == 0 ? true : false); }
-    {Null}          { return symbol(TOKEN_TYPE.NULL, null); }
+    {Null}          { return symbol(TOKEN_TYPE.NULL); }
     "if"            { return symbol(TOKEN_TYPE.IF); }
     "else"          { return symbol(TOKEN_TYPE.ELSE); }
     "data"          { return symbol(TOKEN_TYPE.DATA); }
@@ -128,6 +128,7 @@ import java.util.HashMap;
    [^"-}"]* {}
    "-"      {}
    "}"      {}
+   <<EOF>>    { throw new RuntimeException("Comment block did not close"); }
 }
 
 [^]                 { throw new RuntimeException("Illegal character <"+yytext()+">"); }

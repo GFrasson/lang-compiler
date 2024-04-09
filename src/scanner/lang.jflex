@@ -4,6 +4,8 @@
   *  Neste exemplo não temos nada a incluir nesta seção.
   */
 package scanner;
+
+import java.util.HashMap;
 %%
 
 %unicode
@@ -19,6 +21,7 @@ package scanner;
      * Aqui podemos declarar variáveis e métodos adicionais que julgarmos necessários. 
      */
     private int tokensAmount;
+    private HashMap<String, Character> specialCharacters = new HashMap<String, Character>();
     
     public int getTokensAmount() {
        return tokensAmount;
@@ -37,6 +40,13 @@ package scanner;
 
 %init{
   tokensAmount = 0; // Isto é copiado direto no construtor do lexer. 
+
+  this.specialCharacters.put("\\n", '\n');
+  this.specialCharacters.put("\\r", '\r');
+  this.specialCharacters.put("\\t", '\t');
+  this.specialCharacters.put("\\b", '\b');
+  this.specialCharacters.put("\\\\", '\\');
+  this.specialCharacters.put("\\'", '\'');
 %init}
 
   
@@ -47,8 +57,8 @@ package scanner;
   Float = [:digit:]* "." {Integer}  // [0-9]*.[0-9][0-9]*
   Identifier = [:lowercase:] ([:lowercase:] | [:uppercase:] | [:digit:] | "_")*  // [a-z] ([a-z] | [A-Z] | [0-9] | _)*
   TypeName = [:uppercase:] ([:lowercase:] | [:uppercase:] | [:digit:] | "_")* // [A-Z] ([a-z] | [A-Z] | [0-9] | _)*
-  // Character = '\'' ([:lowercase:] | [:uppercase:] | [:digit:] | \n | \t \ | \b | \r | '\\') '\''  // TODO
-  Character = "'" (. | "\\r" | "\\n" | "\\t" | "\\b" | "\\\\" | "\\'") "'"  // TODO
+  SpecialCharacter = "\\r" | "\\n" | "\\t" | "\\b" | "\\\\" | "\\'"
+  Character = "'" ([^"'" "\\"] | {SpecialCharacter}) "'"
   Boolean = "true" | "false"
   Null = "null"
   LineComment = "--" (.)* {EndOfLine}
@@ -69,10 +79,22 @@ package scanner;
     "return"        { return symbol(TOKEN_TYPE.RETURN); }
     "print"         { return symbol(TOKEN_TYPE.PRINT); }
     "read"          { return symbol(TOKEN_TYPE.READ); }
-    "new"          { return symbol(TOKEN_TYPE.NEW); }
+    "new"           { return symbol(TOKEN_TYPE.NEW); }
     {Identifier}    { return symbol(TOKEN_TYPE.ID); }
     {TypeName}      { return symbol(TOKEN_TYPE.TYPE_NAME); }
-    {Character}     { return symbol(TOKEN_TYPE.CHAR); }
+    {Character}     {
+                      String text = yytext();
+                      String value = text.substring(1);
+                      value = value.substring(0, value.length() - 1);
+
+                      if (value.length() == 1) {
+                        return symbol(TOKEN_TYPE.CHAR, value.toCharArray()[0]);
+                      }
+
+                      if (this.specialCharacters.containsKey(value)) {
+                        return symbol(TOKEN_TYPE.CHAR, this.specialCharacters.get(value));
+                      }
+                    }
     {WhiteSpace}    {}
     {LineComment}   {}
     "{-"            { yybegin(COMMENT); }

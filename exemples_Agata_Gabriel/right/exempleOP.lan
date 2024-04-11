@@ -1,0 +1,19 @@
+main(){
+    idade[5] = usuario.idade;
+    i = funcao(idade[5]);
+    if(!(i<0)){
+        idade[5] = idade[5] - 18;
+    }else{
+        dec = idade[5] * 10, qui = dec/5;
+    }
+
+    if(idade[5] % 2 == 0){
+        a = idade[5] + dec;
+    }else{
+        if(a != 0 && a < 2){
+            x = 2;
+        }
+    }
+    y = Calculadora::dobrar;
+
+}

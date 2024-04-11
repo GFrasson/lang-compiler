@@ -1,0 +1,13 @@
+--Comentario de uma linha
+{- Comentario 
+de 
+Bloco -}
+
+{-
+    Comentario de bloco
+    }
+    --{}
+    {}
+-}
+
+

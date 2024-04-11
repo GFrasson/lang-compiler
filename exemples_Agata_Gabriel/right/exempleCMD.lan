@@ -1,0 +1,18 @@
+main(){
+    if(a > 58){
+        print funcao(a);
+    }else{
+        iterate (b!=x)
+            a = 'a';
+    }
+    read c;
+    i = Classe::new;
+    return 0;
+
+    data Ponto {
+        x :: Float;
+        y :: Float;
+    }
+
+
+}

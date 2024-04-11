@@ -1,0 +1,19 @@
+
+func(x :: Int){
+   a = 2*x / 1;
+   print a;
+}
+
+func2(z :: Int, fl :: Float) : Float, Int{
+   y = 5+ 8*z;
+   fl2 = 2.5 + fl;
+   return fl, y;
+}
+
+main(){
+   x=5;
+   func(x);
+   func2(2,5.5) <z,w>;
+   print z;
+   print w;
+}

@@ -1,0 +1,12 @@
+data User {
+   age :: Float;
+   children :: Int;
+}
+
+main(u :: Int){
+   user = new User;
+   user.idade = 29.5;
+   user.children = 3;
+   print user.children;
+   print user.age;
+}

@@ -1,3 +1,9 @@
+/*
+* Equipe:
+* ÁGATA MEIRELES CARVALHO - 202065001C
+* GABRIEL FRASSON COSTA - 
+*/
+
 import java.io.FileReader;
 import java.io.IOException;
 import scanner.LangScanner;

@@ -1,3 +1,9 @@
+/*
+* Equipe:
+* ÁGATA MEIRELES CARVALHO - 202065001C
+* GABRIEL FRASSON COSTA - 
+*/
+
 package scanner;
 
 public class Token {

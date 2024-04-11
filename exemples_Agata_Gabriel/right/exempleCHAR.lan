@@ -7,4 +7,21 @@ main(){
     x = '\r';
     z = '1';
     a = 'a' + 50;
+
+    --ESTRANHOS MAS QUE SÃO RECONHECIDOS EM TOKENS
+    z <- 2;
+    x = + 1 1;
+    x = true false &&;
+    z = new Int[[2*l]];
+
+    if(x == 5) 
+        print x;
+    else z = x;
+    func(z;;)<: :>;
+    if(a  0) if(b  1) c := a; else d := b;
+    x = - 1 5 9 5;
+    x =  != 55;
+    x = (5 < 25)!
+    x = < 55 11,
+    x = 1..0;
 }

@@ -1,4 +1,8 @@
-
+/*
+* Equipe:
+* ÁGATA MEIRELES CARVALHO - 202065001C
+* GABRIEL FRASSON COSTA - 
+*/
  /*  Esta seção é copiada antes da declaração da classe do analisador léxico.
   *  É nesta seção que se deve incluir imports e declaração de pacotes.
   *  Neste exemplo não temos nada a incluir nesta seção.
@@ -58,7 +62,7 @@ import java.util.HashMap;
   Identifier = [:lowercase:] ([:lowercase:] | [:uppercase:] | [:digit:] | "_")*  // [a-z] ([a-z] | [A-Z] | [0-9] | _)*
   TypeName = [:uppercase:] ([:lowercase:] | [:uppercase:] | [:digit:] | "_")* // [A-Z] ([a-z] | [A-Z] | [0-9] | _)*
   SpecialCharacter = "\\r" | "\\n" | "\\t" | "\\b" | "\\\\" | "\\'"
-  Character = "'" ([^"'" "\\"] | {SpecialCharacter}) "'"
+  Character = "'" ([^"'" "\\"] | {SpecialCharacter}) "'" //Regra para capturar caracteres não reconhecidos ([^])
   Boolean = "true" | "false"
   Null = "null"
   LineComment = "--" (.)* {EndOfLine}
@@ -72,6 +76,8 @@ import java.util.HashMap;
     {Integer}       { return symbol(TOKEN_TYPE.INT, Integer.parseInt(yytext())); }
     {Boolean}       { return symbol(TOKEN_TYPE.BOOLEAN, "true".compareTo(yytext()) == 0 ? true : false); }
     {Null}          { return symbol(TOKEN_TYPE.NULL); }
+
+    //CMD
     "if"            { return symbol(TOKEN_TYPE.IF); }
     "else"          { return symbol(TOKEN_TYPE.ELSE); }
     "data"          { return symbol(TOKEN_TYPE.DATA); }
@@ -80,6 +86,7 @@ import java.util.HashMap;
     "print"         { return symbol(TOKEN_TYPE.PRINT); }
     "read"          { return symbol(TOKEN_TYPE.READ); }
     "new"           { return symbol(TOKEN_TYPE.NEW); }
+
     {Identifier}    { return symbol(TOKEN_TYPE.ID); }
     {TypeName}      { return symbol(TOKEN_TYPE.TYPE_NAME); }
     {Character}     {
@@ -97,6 +104,8 @@ import java.util.HashMap;
                     }
     {WhiteSpace}    {}
     {LineComment}   {}
+
+   //OPERADORES E SEPARADORES
     "{-"            { yybegin(COMMENT); }
     "("             { return symbol(TOKEN_TYPE.OPEN_PARENTHESIS); }
     ")"             { return symbol(TOKEN_TYPE.CLOSE_PARENTHESIS); }
@@ -128,7 +137,7 @@ import java.util.HashMap;
    [^"-}"]* {}
    "-"      {}
    "}"      {}
-   <<EOF>>    { throw new RuntimeException("Comment block did not close"); }
+   <<EOF>>    { throw new RuntimeException("Comment block did not close"); } //Verifica se chega ao final do arquivo para verificar se o comentário de bloco é fechado
 }
 
 [^]                 { throw new RuntimeException("Illegal character <"+yytext()+">"); }

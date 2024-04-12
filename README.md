@@ -14,21 +14,27 @@ Implementamos um programa de teste que usa o analisador léxico implementado. Ta
 * O literal nulo é null;
 * Os símbolos usados para operadores e separadores são (, ), [, ], {, }, >, ;, :, ::, ., ,, =, <, ==, !=, +, -, *, /, %, && e !.
 
-## Gerar Scanner
-Execute na raiz da aplicação para gerar o analisador léxico:
-```bash
-java -jar lib/jflex-full-1.8.2.jar src/scanner/lang.jflex
-```
 
 ## Compilação
+Execute o comando na raiz da aplicação
 ```bash
-javac src/*.java src/scanner/*.java -d bin
+make
+
+# ou
+
+java -jar lib/jflex-full-1.8.2.jar src/scanner/lang.jflex && javac src/*.java src/scanner/*.java -d target
 ```
 
 ## Execução
+Execute o comando na raiz da aplicação.
 ```bash
-java -cp bin App ./exemplos/testes/sintaxe/certo/attrADD.lan
+make run FILE=./examples_Agata_Gabriel/right/exampleCHAR.lan
+
+# ou
+
+java -cp target App ./examples_Agata_Gabriel/right/exampleCHAR.lan
 ```
+ - OBS: Substitua o caminho do arquivo para testar outros exemplos
 
 ## ✒️ Autores
 Ágata Meireles Carvalho

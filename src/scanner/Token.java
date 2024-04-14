@@ -1,7 +1,7 @@
 /*
 * Equipe:
 * ÁGATA MEIRELES CARVALHO - 202065001C
-* GABRIEL FRASSON COSTA - 
+* GABRIEL FRASSON COSTA - 202035001
 */
 
 package scanner;
@@ -38,6 +38,19 @@ public class Token {
 
     @Override
     public String toString() {
-        return "[(" + this.line + "," + this.column + ") \"" + this.tokenType + "\" \"" + this.lexeme + "\" : <" + (this.value == null ? "" : this.value.toString()) + ">]";
+        // TAG: [(linha, coluna) TAG: "lexema" : <valor>]
+        return "[(" + this.line + "," + this.column + ") " + this.tokenType + ": \"" + this.lexeme + "\" : <" + (this.value == null ? "" : this.value.toString()) + ">]";
+    }
+
+    public String toStringShortRepresentation() {
+        // TAG: lexema | valor
+        String stringRepresentation = this.tokenType + ": ";
+        if (this.value != null) {
+            stringRepresentation += this.value;
+        } else {
+            stringRepresentation += this.lexeme;
+        }
+
+        return stringRepresentation;
     }
 }

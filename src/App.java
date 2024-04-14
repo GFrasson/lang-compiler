@@ -1,7 +1,7 @@
 /*
 * Equipe:
 * ÁGATA MEIRELES CARVALHO - 202065001C
-* GABRIEL FRASSON COSTA - 
+* GABRIEL FRASSON COSTA - 202035001
 */
 
 import java.io.FileReader;
@@ -15,7 +15,12 @@ public class App {
         Token token = langScanner.nextToken();
         
         while (token != null) {
-            System.out.println(token.toString());
+            // Padrao de impressao: TAG: lexema | valor
+            System.out.println(token.toStringShortRepresentation());
+            
+            // Padrao de impressao: TAG: [(linha, coluna) TAG: "lexema" : <valor>]
+            // System.out.println(token.toString());
+            
             token = langScanner.nextToken();
         }
 

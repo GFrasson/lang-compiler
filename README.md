@@ -15,6 +15,9 @@ Implementamos um programa de teste que usa o analisador léxico implementado. Ta
 * Os símbolos usados para operadores e separadores são (, ), [, ], {, }, >, ;, :, ::, ., ,, =, <, ==, !=, +, -, *, /, %, && e !.
 
 
+## Versão do JAVA
+**11.0.22**
+
 ## Compilação
 Execute o comando na raiz da aplicação
 ```bash

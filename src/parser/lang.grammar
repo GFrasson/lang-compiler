@@ -1,0 +1,111 @@
+%package "parser";
+%import "ast.*";
+%import "java.io.IOException";
+
+%class "LangParser";
+
+%terminals INT, FLOAT, BOOLEAN,
+    NULL, IF, ELSE, DATA, ITERATE, RETURN, PRINT, READ, NEW,
+    ID, TYPE_NAME, CHAR, 
+    OPEN_PARENTHESIS, CLOSE_PARENTHESIS, OPEN_BRACKET, CLOSE_BRACKET, OPEN_CURLY_BRACE, CLOSE_CURLY_BRACE,
+    GREATER_THAN, LESS_THAN, SEMICOLON, DOUBLE_COLON, COLON, DOT, COMMA,
+    COMPARISON, EQUAL, NOT_EQUAL,
+    PLUS, MINUS, TIMES, DIVISION, MODULUS,
+    AND, NOT;
+
+%left CLOSE_PARENTHESIS;
+%left TIMES;
+%left PLUS;
+
+%embed {:
+  private boolean good;
+          
+  public boolean isGood() { return good; }
+          
+  protected void recoverFromError(Symbol token, TokenStream in) throws IOException, Parser.Exception {
+    super.recoverFromError(token, in);
+    good = false;
+  }
+:};
+
+%init {: good = true; :};
+
+%typeof Prog = "Node";
+%typeof Def = "Node";
+%typeof Data = "Node";
+%typeof Decl = "Node";
+%typeof Fun = "Node";
+%typeof Params = "Node";
+%typeof Type = "Node";
+%typeof BType = "Node";
+%typeof Cmd = "Node";
+%typeof Exp = "Node";
+%typeof LValue = "Node";
+%typeof Exps = "Node";
+
+%goal Prog;
+
+Prog = {Def.def}      {: return def; :}
+     ;
+
+Def = Data.data      {: return ; :}
+    | Fun.fun        {: return ; :}
+    ;
+
+Data = DATA TYPE_NAME.typeName OPEN_CURLY_BRACE {Decl.decl} CLOSE_CURLY_BRACE      {: return ; :}
+     ;
+
+Decl = ID.id DOUBLE_COLON Type SEMICOLON       {: return ; :}
+     ;
+Fun = ID.id OPEN_PARENTHESIS [Params.params] CLOSE_PARENTHESIS [COLON Type (COMMA Type)*] OPEN_CURLY_BRACE {Cmd.cmd} CLOSE_CURLY_BRACE     {: return ; :}
+    ;
+Params = ID.id DOUBLE_COLON Type.type {COMMA ID DOUBLE_COLON Type}    {: return ; :}
+       ;
+Type = Type.type OPEN_BRACKET CLOSE_BRACKET   {: return ; :}
+     | BType.bType    {: return ; :}
+     ;
+
+BType = TYPE_NAME.typeName  {: return ; :}
+      ;
+
+Cmd = OPEN_CURLY_BRACE {Cmd.cmd} CLOSE_CURLY_BRACE    {: return ; :}
+    | IF OPEN_PARENTHESIS Exp.exp CLOSE_PARENTHESIS Cmd.cmd    {: return ; :}
+    | IF OPEN_PARENTHESIS Exp.exp CLOSE_PARENTHESIS Cmd.cmd ELSE Cmd.cmd    {: return ; :}
+    | ITERATE OPEN_PARENTHESIS Exp.exp CLOSE_PARENTHESIS Cmd.cmd    {: return ; :}
+    | READ LValue.lValue SEMICOLON    {: return ; :}
+    | PRINT Exp.exp SEMICOLON    {: return ; :}
+    | RETURN Exp.exp {COMMA Exp.exp} SEMICOLON    {: return ; :}
+    | LValue.lValue EQUAL Exp.exp SEMICOLON    {: return ; :}
+    | ID OPEN_PARENTHESIS [Exps.exps] CLOSE_PARENTHESIS [LESS_THAN LValue.lvalue {COMMA LValue.lvalue} GREATER_THAN] SEMICOLON    {: return ; :}
+    ;
+
+Exp = Exp.expLeft AND Exp.expRight    {: return ; :}
+    | Exp.expLeft LESS_THAN Exp.expRight    {: return ; :}
+    | Exp.expLeft EQUAL Exp.expRight    {: return ; :}
+    | Exp.expLeft COMPARISON Exp.expRight    {: return ; :}
+    | Exp.expLeft NOT_EQUAL Exp.expRight    {: return ; :}
+    | Exp.expLeft PLUS Exp.expRight    {: return ; :}
+    | Exp.expLeft MINUS Exp.expRight    {: return ; :}
+    | Exp.expLeft TIMES Exp.expRight    {: return ; :}
+    | Exp.expLeft DIVISION Exp.expRight    {: return ; :}
+    | Exp.expLeft MODULUS Exp.expRight    {: return ; :}
+    | NOT Exp.exp    {: return ; :}
+    | MINUS Exp.expRight    {: return ; :}
+    | BOOLEAN.boolean    {: return ; :}
+    | NULL    {: return ; :}
+    | INT.int    {: return ; :}
+    | FLOAT.float    {: return ; :}
+    | CHAR.char    {: return ; :}
+    | LValue.lValue    {: return ; :}
+    | OPEN_PARENTHESIS Exp.exp CLOSE_PARENTHESIS    {: return ; :}
+    | NEW Type.type [OPEN_BRACKET Exp.exp CLOSE_BRACKET]    {: return ; :}
+    | ID OPEN_PARENTHESIS [Exps.exps] CLOSE_PARENTHESIS OPEN_BRACKET Exp.exp CLOSE_BRACKET    {: return ; :}
+    ;
+
+LValue = ID.id   {: return ; :}
+       | LValue.lValue OPEN_BRACKET Exp.exp CLOSE_BRACKET  {: return ; :}
+       | LValue.lValue DOT ID.id   {: return ; :}
+       ;
+
+Exps = Exp.exp { COMMA Exp.exps }     {: return ; :}
+     ;

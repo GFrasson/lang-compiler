@@ -1,4 +1,4 @@
-package parser;
+package lang.parser;
 
 /**
  * This class lists terminals used by the

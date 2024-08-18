@@ -1,5 +1,5 @@
-%package "parser";
-%import "ast.*";
+%package "lang.parser";
+%import "lang.ast.*";
 %import "java.io.IOException";
 
 %class "LangParser";

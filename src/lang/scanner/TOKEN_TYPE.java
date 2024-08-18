@@ -3,7 +3,7 @@
 * ÁGATA MEIRELES CARVALHO - 202065001C
 * GABRIEL FRASSON COSTA - 202035001
 */
-package scanner;
+package lang.scanner;
 
 //TIPOS DE TOKEN
 public enum TOKEN_TYPE {

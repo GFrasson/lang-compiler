@@ -1,6 +1,6 @@
-package parser;
+package lang.parser;
 
-import ast.*;
+import lang.ast.*;
 import java.io.IOException;
 import beaver.*;
 import java.util.ArrayList;

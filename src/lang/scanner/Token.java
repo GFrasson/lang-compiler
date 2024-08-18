@@ -4,7 +4,7 @@
 * GABRIEL FRASSON COSTA - 202035001
 */
 
-package scanner;
+package lang.scanner;
 
 public class Token {
     public int line, column;

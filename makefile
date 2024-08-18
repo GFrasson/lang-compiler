@@ -11,15 +11,15 @@ LIB_DIR := lib
 JC := javac
 
 default: generate-parser generate-scanner 
-	$(JC) $(SRC_DIR)/*.java $(SRC_DIR)/**/*.java -d $(OUTPUT_DIR)
+	$(JC) $(SRC_DIR)/*.java $(SRC_DIR)/lang/scanner/*.java $(SRC_DIR)/lang/parser/*.java $(SRC_DIR)/lang/ast/*.java -d $(OUTPUT_DIR)
 
-generate-parser: $(SRC_DIR)/*.java $(SRC_DIR)/**/*.java
-	java -jar $(LIB_DIR)/beaver-cc-0.9.11.jar -T $(SRC_DIR)/parser/lang.grammar
+generate-parser:
+	java -jar $(LIB_DIR)/beaver-cc-0.9.11.jar -T $(SRC_DIR)/lang/parser/lang.grammar
 
-generate-scanner: $(SRC_DIR)/*.java $(SRC_DIR)/**/*.java
-	java -jar $(LIB_DIR)/jflex-full-1.8.2.jar $(SRC_DIR)/scanner/lang.jflex
+generate-scanner:
+	java -jar $(LIB_DIR)/jflex-full-1.8.2.jar $(SRC_DIR)/lang/scanner/lang.jflex
 
-run: compile
+run:
 	java -cp .:$(LIB_DIR)/beaver-rt-0.9.11.jar $(OUTPUT_DIR) App $(FILE)
 
 clean:

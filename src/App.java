@@ -6,8 +6,9 @@
 
 import java.io.FileReader;
 import java.io.IOException;
-import scanner.LangScanner;
-import scanner.Token;
+
+import lang.scanner.LangScanner;
+import lang.scanner.Token;
 
 public class App {
     public static void main(String args[]) throws IOException {

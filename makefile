@@ -10,14 +10,37 @@ LIB_DIR := lib
 
 JC := javac
 
-default: generate $(SRC_DIR)/*.java $(SRC_DIR)/**/*.java
+default: generate-parser generate-scanner 
 	$(JC) $(SRC_DIR)/*.java $(SRC_DIR)/**/*.java -d $(OUTPUT_DIR)
 
-generate:
+generate-parser: $(SRC_DIR)/*.java $(SRC_DIR)/**/*.java
+	java -jar $(LIB_DIR)/beaver-cc-0.9.11.jar -T $(SRC_DIR)/parser/lang.grammar
+
+generate-scanner: $(SRC_DIR)/*.java $(SRC_DIR)/**/*.java
 	java -jar $(LIB_DIR)/jflex-full-1.8.2.jar $(SRC_DIR)/scanner/lang.jflex
 
-run:
-	java -cp $(OUTPUT_DIR) App $(FILE)
+run: compile
+	java -cp .:$(LIB_DIR)/beaver-rt-0.9.11.jar $(OUTPUT_DIR) App $(FILE)
 
 clean:
 	rm -rf $(OUTPUT_DIR)/*
+
+
+
+
+# compile: genparser genlex
+# 	javac -cp .:beaver-rt-0.9.11.jar Teste.java
+
+# genparser: parsers/lang.grammar
+# 	java -jar beaver-cc-0.9.11.jar -T parsers/lang.grammar
+
+# genlex: parsers/lang.jflex genparser
+# 	java -jar jflex-full-1.8.2.jar parsers/lang.jflex
+
+# run: compile
+# 	java -cp .:beaver-rt-0.9.11.jar Teste $(filter-out $@,$(MAKECMDGOALS))
+
+# clean:
+# 	rm -R parsers/MiniLang*.java parsers/Terminals.java
+# 	find . -type f -name "*.class" -delete
+# 	find . -type f -name "*~" -delete

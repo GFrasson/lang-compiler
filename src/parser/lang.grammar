@@ -45,22 +45,34 @@
 
 %goal Prog;
 
-Prog = {Def.def}      {: return def; :}
+Prog = Def.def*      {: return def; :}
      ;
 
 Def = Data.data      {: return ; :}
     | Fun.fun        {: return ; :}
     ;
 
-Data = DATA TYPE_NAME.typeName OPEN_CURLY_BRACE {Decl.decl} CLOSE_CURLY_BRACE      {: return ; :}
+Data = DATA TYPE_NAME.typeName OPEN_CURLY_BRACE Decl.decl* CLOSE_CURLY_BRACE      {: return ; :}
      ;
 
 Decl = ID.id DOUBLE_COLON Type SEMICOLON       {: return ; :}
      ;
-Fun = ID.id OPEN_PARENTHESIS [Params.params] CLOSE_PARENTHESIS [COLON Type (COMMA Type)*] OPEN_CURLY_BRACE {Cmd.cmd} CLOSE_CURLY_BRACE     {: return ; :}
+
+Fun = ID.id OPEN_PARENTHESIS Params.params? CLOSE_PARENTHESIS TypeDef.typeDef? OPEN_CURLY_BRACE Cmd.cmd* CLOSE_CURLY_BRACE     {: return ; :}
     ;
-Params = ID.id DOUBLE_COLON Type.type {COMMA ID DOUBLE_COLON Type}    {: return ; :}
+
+TypeDef = COLON Type TypeList*
+        ;
+
+TypeList = COMMA Type
+         ;
+
+Params = ID.id DOUBLE_COLON Type.type ParamsTypeList.paramsTypeList*    {: return ; :}
        ;
+
+ParamsTypeList = COMMA ID DOUBLE_COLON Type
+               ;
+
 Type = Type.type OPEN_BRACKET CLOSE_BRACKET   {: return ; :}
      | BType.bType    {: return ; :}
      ;
@@ -68,16 +80,25 @@ Type = Type.type OPEN_BRACKET CLOSE_BRACKET   {: return ; :}
 BType = TYPE_NAME.typeName  {: return ; :}
       ;
 
-Cmd = OPEN_CURLY_BRACE {Cmd.cmd} CLOSE_CURLY_BRACE    {: return ; :}
+Cmd = OPEN_CURLY_BRACE Cmd.cmd* CLOSE_CURLY_BRACE    {: return ; :}
     | IF OPEN_PARENTHESIS Exp.exp CLOSE_PARENTHESIS Cmd.cmd    {: return ; :}
     | IF OPEN_PARENTHESIS Exp.exp CLOSE_PARENTHESIS Cmd.cmd ELSE Cmd.cmd    {: return ; :}
     | ITERATE OPEN_PARENTHESIS Exp.exp CLOSE_PARENTHESIS Cmd.cmd    {: return ; :}
     | READ LValue.lValue SEMICOLON    {: return ; :}
     | PRINT Exp.exp SEMICOLON    {: return ; :}
-    | RETURN Exp.exp {COMMA Exp.exp} SEMICOLON    {: return ; :}
+    | RETURN Exp.exp ExpList* SEMICOLON    {: return ; :}
     | LValue.lValue EQUAL Exp.exp SEMICOLON    {: return ; :}
-    | ID OPEN_PARENTHESIS [Exps.exps] CLOSE_PARENTHESIS [LESS_THAN LValue.lvalue {COMMA LValue.lvalue} GREATER_THAN] SEMICOLON    {: return ; :}
+    | ID OPEN_PARENTHESIS Exps.exps? CLOSE_PARENTHESIS ReturnParams.returnParams? SEMICOLON    {: return ; :}
     ;
+
+ExpList = COMMA Exp.exp
+        ;
+
+LValueList = COMMA LValue.lvalue
+           ;
+
+ReturnParams = LESS_THAN LValue.lvalue LValueList* GREATER_THAN
+             ;
 
 Exp = Exp.expLeft AND Exp.expRight    {: return ; :}
     | Exp.expLeft LESS_THAN Exp.expRight    {: return ; :}
@@ -98,14 +119,20 @@ Exp = Exp.expLeft AND Exp.expRight    {: return ; :}
     | CHAR.char    {: return ; :}
     | LValue.lValue    {: return ; :}
     | OPEN_PARENTHESIS Exp.exp CLOSE_PARENTHESIS    {: return ; :}
-    | NEW Type.type [OPEN_BRACKET Exp.exp CLOSE_BRACKET]    {: return ; :}
-    | ID OPEN_PARENTHESIS [Exps.exps] CLOSE_PARENTHESIS OPEN_BRACKET Exp.exp CLOSE_BRACKET    {: return ; :}
+    | NEW Type.type VectorDef.vectorDef?    {: return ; :}
+    | ID OPEN_PARENTHESIS Exps.exps? CLOSE_PARENTHESIS OPEN_BRACKET Exp.exp CLOSE_BRACKET    {: return ; :}
     ;
+
+VectorDef = OPEN_BRACKET Exp.exp CLOSE_BRACKET
+          ;
 
 LValue = ID.id   {: return ; :}
        | LValue.lValue OPEN_BRACKET Exp.exp CLOSE_BRACKET  {: return ; :}
        | LValue.lValue DOT ID.id   {: return ; :}
        ;
 
-Exps = Exp.exp { COMMA Exp.exps }     {: return ; :}
+Exps = Exp.exp ExpList.expList*     {: return ; :}
      ;
+
+ExpList = COMMA Exp.exp
+        ;

@@ -20,7 +20,7 @@ generate-scanner:
 	java -jar $(LIB_DIR)/jflex-full-1.8.2.jar $(SRC_DIR)/lang/scanner/lang.jflex
 
 run:
-	java -cp .:$(LIB_DIR)/beaver-rt-0.9.11.jar $(OUTPUT_DIR) App $(FILE)
+	java -cp .:$(LIB_DIR)/beaver-rt-0.9.11.jar $(OUTPUT_DIR) LangCompiler $(FILE)
 
 clean:
 	rm -rf $(OUTPUT_DIR)/*

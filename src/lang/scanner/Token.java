@@ -6,30 +6,38 @@
 
 package lang.scanner;
 
-public class Token {
+import beaver.Symbol;
+
+public class Token extends Symbol {
     public int line, column;
-    public TOKEN_TYPE tokenType;
+    public short terminal;
     public String lexeme;
     public Object value;
 
-    public Token(TOKEN_TYPE tokenType, String lexeme, Object value, int line, int column) {
-        this.tokenType = tokenType;
+    public Token(short terminal, String lexeme, Object value, int line, int column, int length) {
+        super(terminal, line, column, length, value);
+
+        this.terminal = terminal;
         this.lexeme = lexeme;
         this.value = value;
         this.line = line;
         this.column = column;
     }
 
-    public Token(TOKEN_TYPE tokenType, String lexeme, int line, int column) {
-        this.tokenType = tokenType;
+    public Token(short terminal, String lexeme, int line, int column, int length) {
+        super(terminal, line, column, length);
+
+        this.terminal = terminal;
         this.lexeme = lexeme;
         this.value = null;
         this.line = line;
         this.column = column;
     }
 
-    public Token(TOKEN_TYPE tokenType, Object value, int line, int column) {
-        this.tokenType = tokenType;
+    public Token(short terminal, Object value, int line, int column, int length) {
+        super(terminal, line, column, length, value);
+
+        this.terminal = terminal;
         this.lexeme = "";
         this.value = value;
         this.line = line;
@@ -39,12 +47,12 @@ public class Token {
     @Override
     public String toString() {
         // TAG: [(linha, coluna) TAG: "lexema" : <valor>]
-        return "[(" + this.line + "," + this.column + ") " + this.tokenType + ": \"" + this.lexeme + "\" : <" + (this.value == null ? "" : this.value.toString()) + ">]";
+        return "[(" + this.line + "," + this.column + ") " + this.terminal + ": \"" + this.lexeme + "\" : <" + (this.value == null ? "" : this.value.toString()) + ">]";
     }
 
     public String toStringShortRepresentation() {
         // TAG: lexema | valor
-        String stringRepresentation = this.tokenType + ": ";
+        String stringRepresentation = this.terminal + ": ";
         if (this.value != null) {
             stringRepresentation += this.value;
         } else {

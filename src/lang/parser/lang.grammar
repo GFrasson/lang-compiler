@@ -4,9 +4,9 @@
 
 %class "LangParser";
 
-%terminals INT, FLOAT, BOOLEAN,
+%terminals INT, FLOAT, FALSE, TRUE,
     NULL, IF, ELSE, DATA, ITERATE, RETURN, PRINT, READ, NEW,
-    ID, TYPE_NAME, CHAR, 
+    ID, TYPE_INT, TYPE_FLOAT, TYPE_BOOL, TYPE_CHAR, TYPE_NAME, CHAR, 
     OPEN_PARENTHESIS, CLOSE_PARENTHESIS, OPEN_BRACKET, CLOSE_BRACKET, OPEN_CURLY_BRACE, CLOSE_CURLY_BRACE,
     GREATER_THAN, LESS_THAN, SEMICOLON, DOUBLE_COLON, COLON, DOT, COMMA,
     COMPARISON, EQUAL, NOT_EQUAL,
@@ -81,7 +81,11 @@ Type = Type.type OPEN_BRACKET CLOSE_BRACKET   {: return ; :}
      | BType.bType    {: return ; :}
      ;
 
-BType = TYPE_NAME.typeName  {: return ; :}
+BType = TYPE_INT  {: return ; :}
+      | TYPE_CHAR  {: return ; :}
+      | TYPE_BOOL  {: return ; :}
+      | TYPE_FLOAT  {: return ; :}
+      | TYPE_NAME.typeName  {: return ; :}
       ;
 
 Cmd = OPEN_CURLY_BRACE Cmd.cmd* CLOSE_CURLY_BRACE    {: return ; :}
@@ -124,7 +128,8 @@ Exp4 = Exp.expLeft PLUS Exp.expRight    {: return ; :}
      | Exp.expLeft MODULUS Exp.expRight    {: return ; :}
      | NOT Exp.exp    {: return ; :}
      | MINUS Exp.expRight    {: return ; :}
-     | BOOLEAN.boolean    {: return ; :}
+     | FALSE.false    {: return ; :}
+     | TRUE.true    {: return ; :}
      | NULL    {: return ; :}
      | INT.int    {: return ; :}
      | FLOAT.float    {: return ; :}

@@ -13,38 +13,40 @@ import java.util.ArrayList;
 public class LangParser extends Parser {
 
 	static final ParsingTables PARSING_TABLES = new ParsingTables(
-		"U9pjbtcSLMCOnt$dd4dBq6JcbgMa8bacAcEeQ9HfiYGgHSeIeIWI8jeej56Ho4wBoaxMB94" +
-		"b#xvbZUnaINPUttFkSyyzznfz#Yz$TC$dTvxzEU$#l5VoRz7HwgR3T80ELdVrK4yTehxLwT" +
-		"oBwgKMwg83jR$xGoN$uREEsJRergDk73EvStecLIkITZEfjfeYxQdTerd#1gcvIjLQfscu#" +
-		"nhFM8gykgWjCVMKqYbuTjG#wgmAZIPkQ29kTcmfrruwMsTfiAuXLvbsJLhSZ#vLZLHlB4sr" +
-		"VKvCzgjDjOjPnkLPqkqvKErLY5UnDYKsxNb9mYkPDSDVh2awtAHJSomXtqi3RMpsqBvcEIg" +
-		"oR8B7CVHY2qrJaKvGVUJZpQDtrACdTOR9LqSHytLU8b#PngY6Dd9$QJDjgu3ehNG#aLkpjo" +
-		"h8LzTzRz5#jbNkkeYl84y7sui$goQPPfXl4slrtlQLNkeKSvKnLnLpuQZj5t5TOzr1CTSdv" +
-		"ewCkUDYRaZCdHvpPyRSg9WxrxWnxa$wMg06zFTatQHcZ45T#XkEmkUwIfipRnjh5cDmWwvN" +
-		"GvseGMw5nkfopNHhw6CTx3KrMpl0ZudcurBjf5RgfvIxqRsYaUvvzv4kr3Jt6Pa7wp9MvYp" +
-		"y9scYhiJd2J9VXsuUs5ADr5ZRQ3krr32rKRleEPHPF4BzTQm6k1VS3Jf9vsYyHkW2V2Rh8a" +
-		"rmpsag$7ItL5Uuxzod#DTtFz2k6zs7cWEjBu5hDLSUynRGMtf7gsknj#fKgolaLDsUFkr8N" +
-		"qIhglTPrsmRTEjJbvt91ZbI4KzMge#q6Qjz2rPXGoGl8MMzMd96xuVdnfmqTVdQRdXsJtWM" +
-		"nfPwd7QLxFqKcJpMO4cEfH0vnTdYaIit9fihQ$7oBBcj3dFxvhbxmYkPDSDtONzciZRAiOH" +
-		"yDcypTc7IgtLqtXLpCgKu6zepaZwMjCTMaKUJk8VT8haLSZPVCNnRzhBeIocdf4$DA2Uo3L" +
-		"byyddnc7PDjAf7nFiv$MsArDpifNcj$dznOLzRCNAbd8fbzBSOkKqq2aLKsG2v8be3dQWHU" +
-		"t4I7y3CR4kDw4WlMt0s5zFN5D4jUCBvE0Y#D5g1wTLJ0gs2XYiW5UbJF8svLOHy4pA7DErV" +
-		"59w9V3E8Ta3ZwF6OnM8qXRmBUVPWDGTHrj0ddCyIrbF8bz3USBSqu0czooAVOZLm3itMFDA" +
-		"2iGf$tX9UMqf#UIXdmEzBy0lsvq3FjCxlO37ZmCNWC9DlJSQQRoVqRQ53eOz0Xw3y5JhGyZ" +
-		"kBJQ4Rb8WRoMixz1MWdVbqCTieNgsGkuB3JGVnThISh5VlH6WbT1Yq6$RZe9bsFixh6EZcq" +
-		"C7G$j3X5ZlMw2JB6wxz6T3ZJN#jwK$WDP$OeVbzjcyinETyYxaB#KoBEnKCT$pGZJBT1Rng" +
-		"GyU04V0FOSjy$rpuvj3pWBLVJw5RLlrtzJAsgunV3j#6kD6MgxlfLw9$stIbl5OXppRv8bu" +
-		"DeHU2dc2SwSU3I$33xfy19e1UPhi2z36UzU1F16LWAkXh#abWcl4pmMGm7J17$YpGpsnpm1" +
-		"HmAPYHDwOsddwjwlkUrUDxKc9CLbVddvTxWEKeCdbcmhROR7NpuvZ6LMPhQNJNn7TVCrsPq" +
-		"Ru9stAZAup#PD$QC$7THKQN6brcz0MZhoPytqhmxoNu5MlhTyBliomVpftUGVTrdi$01Fzz" +
-		"hiqFZFOs#vgrVElt1Cy#oCuFyPdzN92NltPUZinQQfRdDoGyRn9oVwEdvVdj3JOrVf3Hgd#" +
-		"trTy$iwwWf#JPkkRAMY3xkR$Tx#wtMFe9$6ByQl2#Uy#zwtvLpizz1RwDkELkLQnb7jpRiV" +
-		"HMz7xJ9CunjmGy74cBmOFW0N0$kCyznljHnsdYxdMSlUuUjyZTxUvoTxextEt8ywAusy2j4" +
-		"RV0pK#qPs7CiIVTzMwkkzdTucvA#xWtpCPvuru3pxZNJVDIDejxDgU7d5jkcNiweVa2h7HV" +
-		"vdXzRFG3zqbuIlAlkmDLAxnxSDu3Z$j5MA7Jg8ZWKtS5FEfq3Mft0JSU0OyABH1My13X$KN" +
-		"0eqRKecPxmATo2tXKwe2AwLFPFU1JtmKywaS1jRE0cXm0ZyeSteO2K0FKD1f4gCHMIMndOZ" +
-		"j7VWKHof7BaQkWLP5#8#gsJwKERtSUyBdZ2NZS10guZmJ0urOI63pk9m7mkAK4rS0tUF#1W" +
-		"1kmG2Q#9ZVWW5j2U5Ce005t6G$ut6W4FEvtFhSBNpt$0QgsVjy=");
+		"U9pjbdcKrbKPnx$tleCWZJWw30WQiaSsbfC2mwAC3gY824WcGLfgM8gPP5HafkQuP2b8ueA" +
+		"82o0YYAYbcIsQYb6fcHLMqc8BcRHePLRQxNFlxtb$x##THO$7Spp#uVkUxttMk$tkS#$pI7" +
+		"whvkf87QDfUe#Eqdjrj6RfVVfWvzhmFStMEpH5CtI49kaGJGx$LNsNlgzYv3UrRtZjXMfJF" +
+		"$K8Bsbt3KLgK1$rrMxXHUGBDOp8U7SM6M4xqjkrZqRgqpeZF5CbRLThHL9trQctMiEAB9gG" +
+		"n#f0HjjHyqtJ6ZLXMtX4vsXNB2iOhT5iDScxCjemTTCEz7WBViqQNR3iQprsIZs6QGvUipN" +
+		"68hdYLvZJ#9sHUX7Z7p2vLx9ziifpjZvgEtyUpK2x6VzCjW$fmzh3l4z9cbPzHitXRrggUP" +
+		"MUvd5ByfYZ2$Wcz#aYtM0xEaK3LD9LDl9pXVLbA$2CrA9nQGtBDDXiRxFLjJ37$ioHSJCq0" +
+		"UuWctUs9kRSmJbtQCuTbdEnxzJ4JSzrCtFkMEFwmPzWl4K8cfDplu$dtCAS#spEVJxdpi$7" +
+		"UwlwQo$eb$BnohIVBb6jcg3NTx2ryU#fqtMkHl2$GeCqd9WOmZ$xDjSHJRleB9sfZ#bKVLc" +
+		"NQaxuZTPhJotNrVGz3tkRRjBUz6hJk$GftQZLsa$ZTRYkJErnHEudw7LDU5ZdXE$YjrGBj0" +
+		"pj$F07NGjT1LQ4NskK5d6cxm$tQXsQ0nZr0Fx7wqHzH2U5pM6vJjFdTBQ#m2nVr69Tfel3G" +
+		"reIleryUVXh#Bsk2SzgPVWLQrgZjRJnTxCSvrxY5iGOwQuUt9gUn7xdsbfkpTvw9plPXrlG" +
+		"YxWMtwGhtrSpyflQDxwsaJlHbnDtt1R7ZHf0d0zCikC5haH67wHuh$hpfk$HGV85QJYl$Rv" +
+		"eQYsQXdERTasZDPZ69qrytnjuFnrjNUuzCjagezLn7oRGemz#zVIeMCezHjbeW$6ghBVYLv" +
+		"mpuuSYEMAyF89Bja5LdiMTUqRFR7tCSnpVCjEq98rdPVLfXuCwtAPiHuFnyEINSSoMxQY5#" +
+		"LjvlpAlsiBwiXNCA8nqD3CNLr2nl1vStm9VZf3NDjw1d5e9EYKVhqpxKbbCJBQP7MoD$8ya" +
+		"NuqbLfjuQVVZNqys7stVfZb5o6GoqpGoqU7afC5yrp5aj4bai4QoUJrj0tqZZV5#2FciYMm" +
+		"uWeecjZ5oZqYzOcp6CssWpedQ6AEHPdnyCuVWvpZHg1c2BcQGUbPUIrlBVt$wZqLsoNiyKc" +
+		"#yUwSxLyU$6VtGv3qcndRWXonjE3izucutcZsX0wDSHhoOO2nO36QQxdAZysY2v4yoUNwnR" +
+		"sV0PmDu63m4re4hGJrutEpzZGu2Mohz$3IQHdHJmQ7cSvJPZg4PZNmYiBNu9V2pCfuJaLi8" +
+		"fQy$3JeBkXHwWespcUPK47CHVkuiQ9lrNMHqcOrxEirgw1MctsXwzg5xeFEwthi$4znX$JO" +
+		"npmMchmDhqud8NMAwhzFqXDuEriC$XcsvsRu2FmhwLN2PZVSakaSxdrVRiAqs$Zdu2VIxrS" +
+		"QwsFGleTzgkkFXUu0xJVuEpK1etDyYKDRV1Hx4Rmqqucwms6oSiR$K#7j1CtwSWxyFbB$bU" +
+		"72$ySI3tmWE1fo1vqpyAhDj0Ly3Xu5DrNjpDeSRqSKttxtWsrBWT#hC$#N0M3iRdMHqGk4R" +
+		"FsswblRzEDPdp7QiqUCA$LumtLoZvnNMEDteNKOVCBgvuFE8qVBzUSAedQLxgk2xhS1lB$3" +
+		"FljBU2xxFLtX$CfYExiLsFWiAFjsgRRwfk4zepwxdohwtyRt1o89yaT5#xVeCQBUM9QRViP" +
+		"tVSZ2g8Dizy2lR#Iq0hSQNutPX9siz0qmrVaKxMrkrh0soN$XV#4$uToxz0$pB#B#3hU79y" +
+		"8lmy$2py4JO4bvGrI$y2VmvSJyDVycrFm4$pgN7K$iZaxu5lW7kJXAtDzm9U4K2Bqgu8toJ" +
+		"zfx0JGkt1zwVS5lO66uD6y8jONrO5sv6SttgkHRSbBXLOMLXHQjpxbfmTRWkt1ZMX1iod$2" +
+		"OsNu07WKFXX#QvlkLKSAcgZtoyeG7mlq5pH$1xyBJLLvF6Vrb#6ryGpMNIiS1JrKZuAXe79" +
+		"LHXea9djmk4EkZRjG7DLG90Yvc2#38A16Uh2$WgA9waDaTyEHt0KSUBv5PFPazPdTFVXTmL" +
+		"1CrvDaQidK9E79sHpHXQsBk9YhaZ9OI9cERp5YyTY3wrIICGuxrt1JebAJVWOploVMUwiC1" +
+		"7pCSS5GrDTG$9U2eWae6HprK0ewggDG9lC6z34fKB0BbCRfJiPJ8pB7Eg04bgY47F3MHWAF" +
+		"oz5GdNhF#3nigioq=");
 
 	static final Action RETURN3 = new Action() {
 		public Symbol reduce(Symbol[] _symbols, int offset) {
@@ -217,13 +219,33 @@ public class LangParser extends Parser {
 					 return ;
 				}
 			},
-			new Action() {	// [36] BType = TYPE_NAME.typeName
+			new Action() {	// [36] BType = TYPE_INT
+				public Symbol reduce(Symbol[] _symbols, int offset) {
+					 return ;
+				}
+			},
+			new Action() {	// [37] BType = TYPE_CHAR
+				public Symbol reduce(Symbol[] _symbols, int offset) {
+					 return ;
+				}
+			},
+			new Action() {	// [38] BType = TYPE_BOOL
+				public Symbol reduce(Symbol[] _symbols, int offset) {
+					 return ;
+				}
+			},
+			new Action() {	// [39] BType = TYPE_FLOAT
+				public Symbol reduce(Symbol[] _symbols, int offset) {
+					 return ;
+				}
+			},
+			new Action() {	// [40] BType = TYPE_NAME.typeName
 				public Symbol reduce(Symbol[] _symbols, int offset) {
 					final Symbol typeName = _symbols[offset + 1];
 					 return ;
 				}
 			},
-			new Action() {	// [37] Cmd = OPEN_CURLY_BRACE opt$lst$Cmd.cmd CLOSE_CURLY_BRACE
+			new Action() {	// [41] Cmd = OPEN_CURLY_BRACE opt$lst$Cmd.cmd CLOSE_CURLY_BRACE
 				public Symbol reduce(Symbol[] _symbols, int offset) {
 					final Symbol _symbol_cmd = _symbols[offset + 2];
 					final ArrayList _list_cmd = (ArrayList) _symbol_cmd.value;
@@ -231,7 +253,7 @@ public class LangParser extends Parser {
 					 return ;
 				}
 			},
-			new Action() {	// [38] Cmd = IF OPEN_PARENTHESIS Exp.exp CLOSE_PARENTHESIS Cmd.cmd
+			new Action() {	// [42] Cmd = IF OPEN_PARENTHESIS Exp.exp CLOSE_PARENTHESIS Cmd.cmd
 				public Symbol reduce(Symbol[] _symbols, int offset) {
 					final Symbol _symbol_exp = _symbols[offset + 3];
 					final Node exp = (Node) _symbol_exp.value;
@@ -240,7 +262,7 @@ public class LangParser extends Parser {
 					 return ;
 				}
 			},
-			new Action() {	// [39] Cmd = IF OPEN_PARENTHESIS Exp.exp CLOSE_PARENTHESIS Cmd.cmd ELSE Cmd.cmd
+			new Action() {	// [43] Cmd = IF OPEN_PARENTHESIS Exp.exp CLOSE_PARENTHESIS Cmd.cmd ELSE Cmd.cmd
 				public Symbol reduce(Symbol[] _symbols, int offset) {
 					final Symbol _symbol_exp = _symbols[offset + 3];
 					final Node exp = (Node) _symbol_exp.value;
@@ -251,7 +273,7 @@ public class LangParser extends Parser {
 					 return ;
 				}
 			},
-			new Action() {	// [40] Cmd = ITERATE OPEN_PARENTHESIS Exp.exp CLOSE_PARENTHESIS Cmd.cmd
+			new Action() {	// [44] Cmd = ITERATE OPEN_PARENTHESIS Exp.exp CLOSE_PARENTHESIS Cmd.cmd
 				public Symbol reduce(Symbol[] _symbols, int offset) {
 					final Symbol _symbol_exp = _symbols[offset + 3];
 					final Node exp = (Node) _symbol_exp.value;
@@ -260,40 +282,40 @@ public class LangParser extends Parser {
 					 return ;
 				}
 			},
-			new Action() {	// [41] Cmd = READ LValue.lValue SEMICOLON
+			new Action() {	// [45] Cmd = READ LValue.lValue SEMICOLON
 				public Symbol reduce(Symbol[] _symbols, int offset) {
 					final Symbol _symbol_lValue = _symbols[offset + 2];
 					final Node lValue = (Node) _symbol_lValue.value;
 					 return ;
 				}
 			},
-			new Action() {	// [42] Cmd = PRINT Exp.exp SEMICOLON
+			new Action() {	// [46] Cmd = PRINT Exp.exp SEMICOLON
 				public Symbol reduce(Symbol[] _symbols, int offset) {
 					final Symbol _symbol_exp = _symbols[offset + 2];
 					final Node exp = (Node) _symbol_exp.value;
 					 return ;
 				}
 			},
-			new Action() {	// [43] lst$CmdExpList = CmdExpList
+			new Action() {	// [47] lst$CmdExpList = CmdExpList
 				public Symbol reduce(Symbol[] _symbols, int offset) {
 					ArrayList lst = new ArrayList(); lst.add(_symbols[offset + 1]); return new Symbol(lst);
 				}
 			},
-			new Action() {	// [44] lst$CmdExpList = lst$CmdExpList CmdExpList
+			new Action() {	// [48] lst$CmdExpList = lst$CmdExpList CmdExpList
 				public Symbol reduce(Symbol[] _symbols, int offset) {
 					((ArrayList) _symbols[offset + 1].value).add(_symbols[offset + 2]); return _symbols[offset + 1];
 				}
 			},
-			Action.NONE,  	// [45] opt$lst$CmdExpList = 
-			Action.RETURN,	// [46] opt$lst$CmdExpList = lst$CmdExpList
-			new Action() {	// [47] Cmd = RETURN Exp.exp opt$lst$CmdExpList SEMICOLON
+			Action.NONE,  	// [49] opt$lst$CmdExpList = 
+			Action.RETURN,	// [50] opt$lst$CmdExpList = lst$CmdExpList
+			new Action() {	// [51] Cmd = RETURN Exp.exp opt$lst$CmdExpList SEMICOLON
 				public Symbol reduce(Symbol[] _symbols, int offset) {
 					final Symbol _symbol_exp = _symbols[offset + 2];
 					final Node exp = (Node) _symbol_exp.value;
 					 return ;
 				}
 			},
-			new Action() {	// [48] Cmd = LValue.lValue EQUAL Exp.exp SEMICOLON
+			new Action() {	// [52] Cmd = LValue.lValue EQUAL Exp.exp SEMICOLON
 				public Symbol reduce(Symbol[] _symbols, int offset) {
 					final Symbol _symbol_lValue = _symbols[offset + 1];
 					final Node lValue = (Node) _symbol_lValue.value;
@@ -302,11 +324,11 @@ public class LangParser extends Parser {
 					 return ;
 				}
 			},
-			Action.NONE,  	// [49] opt$Exps = 
-			Action.RETURN,	// [50] opt$Exps = Exps
-			Action.NONE,  	// [51] opt$ReturnParams = 
-			Action.RETURN,	// [52] opt$ReturnParams = ReturnParams
-			new Action() {	// [53] Cmd = ID OPEN_PARENTHESIS opt$Exps.exps CLOSE_PARENTHESIS opt$ReturnParams.returnParams SEMICOLON
+			Action.NONE,  	// [53] opt$Exps = 
+			Action.RETURN,	// [54] opt$Exps = Exps
+			Action.NONE,  	// [55] opt$ReturnParams = 
+			Action.RETURN,	// [56] opt$ReturnParams = ReturnParams
+			new Action() {	// [57] Cmd = ID OPEN_PARENTHESIS opt$Exps.exps CLOSE_PARENTHESIS opt$ReturnParams.returnParams SEMICOLON
 				public Symbol reduce(Symbol[] _symbols, int offset) {
 					final Symbol _symbol_exps = _symbols[offset + 3];
 					final Node exps = (Node) _symbol_exps.value;
@@ -314,22 +336,22 @@ public class LangParser extends Parser {
 					 return ;
 				}
 			},
-			RETURN2,	// [54] CmdExpList = COMMA Exp.exp
-			RETURN2,	// [55] LValueList = COMMA LValue.lvalue
-			new Action() {	// [56] lst$LValueList = LValueList
+			RETURN2,	// [58] CmdExpList = COMMA Exp.exp
+			RETURN2,	// [59] LValueList = COMMA LValue.lvalue
+			new Action() {	// [60] lst$LValueList = LValueList
 				public Symbol reduce(Symbol[] _symbols, int offset) {
 					ArrayList lst = new ArrayList(); lst.add(_symbols[offset + 1]); return new Symbol(lst);
 				}
 			},
-			new Action() {	// [57] lst$LValueList = lst$LValueList LValueList
+			new Action() {	// [61] lst$LValueList = lst$LValueList LValueList
 				public Symbol reduce(Symbol[] _symbols, int offset) {
 					((ArrayList) _symbols[offset + 1].value).add(_symbols[offset + 2]); return _symbols[offset + 1];
 				}
 			},
-			Action.NONE,  	// [58] opt$lst$LValueList = 
-			Action.RETURN,	// [59] opt$lst$LValueList = lst$LValueList
-			RETURN2,	// [60] ReturnParams = LESS_THAN LValue.lvalue opt$lst$LValueList GREATER_THAN
-			new Action() {	// [61] Exp = Exp.expLeft AND Exp2.expRight
+			Action.NONE,  	// [62] opt$lst$LValueList = 
+			Action.RETURN,	// [63] opt$lst$LValueList = lst$LValueList
+			RETURN2,	// [64] ReturnParams = LESS_THAN LValue.lvalue opt$lst$LValueList GREATER_THAN
+			new Action() {	// [65] Exp = Exp.expLeft AND Exp2.expRight
 				public Symbol reduce(Symbol[] _symbols, int offset) {
 					final Symbol _symbol_expLeft = _symbols[offset + 1];
 					final Node expLeft = (Node) _symbol_expLeft.value;
@@ -337,31 +359,31 @@ public class LangParser extends Parser {
 					 return ;
 				}
 			},
-			Action.RETURN,	// [62] Exp = Exp2
-			new Action() {	// [63] Exp2 = Exp2.expLeft COMPARISON Exp3.expRight
+			Action.RETURN,	// [66] Exp = Exp2
+			new Action() {	// [67] Exp2 = Exp2.expLeft COMPARISON Exp3.expRight
 				public Symbol reduce(Symbol[] _symbols, int offset) {
 					final Symbol expLeft = _symbols[offset + 1];
 					final Symbol expRight = _symbols[offset + 3];
 					 return ;
 				}
 			},
-			new Action() {	// [64] Exp2 = Exp2.expLeft NOT_EQUAL Exp3.expRight
+			new Action() {	// [68] Exp2 = Exp2.expLeft NOT_EQUAL Exp3.expRight
 				public Symbol reduce(Symbol[] _symbols, int offset) {
 					final Symbol expLeft = _symbols[offset + 1];
 					final Symbol expRight = _symbols[offset + 3];
 					 return ;
 				}
 			},
-			Action.RETURN,	// [65] Exp2 = Exp3
-			new Action() {	// [66] Exp3 = Exp3.expLeft LESS_THAN Exp4.expRight
+			Action.RETURN,	// [69] Exp2 = Exp3
+			new Action() {	// [70] Exp3 = Exp3.expLeft LESS_THAN Exp4.expRight
 				public Symbol reduce(Symbol[] _symbols, int offset) {
 					final Symbol expLeft = _symbols[offset + 1];
 					final Symbol expRight = _symbols[offset + 3];
 					 return ;
 				}
 			},
-			Action.RETURN,	// [67] Exp3 = Exp4
-			new Action() {	// [68] Exp4 = Exp.expLeft PLUS Exp.expRight
+			Action.RETURN,	// [71] Exp3 = Exp4
+			new Action() {	// [72] Exp4 = Exp.expLeft PLUS Exp.expRight
 				public Symbol reduce(Symbol[] _symbols, int offset) {
 					final Symbol _symbol_expLeft = _symbols[offset + 1];
 					final Node expLeft = (Node) _symbol_expLeft.value;
@@ -370,7 +392,7 @@ public class LangParser extends Parser {
 					 return ;
 				}
 			},
-			new Action() {	// [69] Exp4 = Exp.expLeft MINUS Exp.expRight
+			new Action() {	// [73] Exp4 = Exp.expLeft MINUS Exp.expRight
 				public Symbol reduce(Symbol[] _symbols, int offset) {
 					final Symbol _symbol_expLeft = _symbols[offset + 1];
 					final Node expLeft = (Node) _symbol_expLeft.value;
@@ -379,7 +401,7 @@ public class LangParser extends Parser {
 					 return ;
 				}
 			},
-			new Action() {	// [70] Exp4 = Exp.expLeft TIMES Exp.expRight
+			new Action() {	// [74] Exp4 = Exp.expLeft TIMES Exp.expRight
 				public Symbol reduce(Symbol[] _symbols, int offset) {
 					final Symbol _symbol_expLeft = _symbols[offset + 1];
 					final Node expLeft = (Node) _symbol_expLeft.value;
@@ -388,7 +410,7 @@ public class LangParser extends Parser {
 					 return ;
 				}
 			},
-			new Action() {	// [71] Exp4 = Exp.expLeft DIVISION Exp.expRight
+			new Action() {	// [75] Exp4 = Exp.expLeft DIVISION Exp.expRight
 				public Symbol reduce(Symbol[] _symbols, int offset) {
 					final Symbol _symbol_expLeft = _symbols[offset + 1];
 					final Node expLeft = (Node) _symbol_expLeft.value;
@@ -397,7 +419,7 @@ public class LangParser extends Parser {
 					 return ;
 				}
 			},
-			new Action() {	// [72] Exp4 = Exp.expLeft MODULUS Exp.expRight
+			new Action() {	// [76] Exp4 = Exp.expLeft MODULUS Exp.expRight
 				public Symbol reduce(Symbol[] _symbols, int offset) {
 					final Symbol _symbol_expLeft = _symbols[offset + 1];
 					final Node expLeft = (Node) _symbol_expLeft.value;
@@ -406,66 +428,72 @@ public class LangParser extends Parser {
 					 return ;
 				}
 			},
-			new Action() {	// [73] Exp4 = NOT Exp.exp
+			new Action() {	// [77] Exp4 = NOT Exp.exp
 				public Symbol reduce(Symbol[] _symbols, int offset) {
 					final Symbol _symbol_exp = _symbols[offset + 2];
 					final Node exp = (Node) _symbol_exp.value;
 					 return ;
 				}
 			},
-			new Action() {	// [74] Exp4 = MINUS Exp.expRight
+			new Action() {	// [78] Exp4 = MINUS Exp.expRight
 				public Symbol reduce(Symbol[] _symbols, int offset) {
 					final Symbol _symbol_expRight = _symbols[offset + 2];
 					final Node expRight = (Node) _symbol_expRight.value;
 					 return ;
 				}
 			},
-			new Action() {	// [75] Exp4 = BOOLEAN.boolean
+			new Action() {	// [79] Exp4 = FALSE.false
 				public Symbol reduce(Symbol[] _symbols, int offset) {
-					final Symbol boolean = _symbols[offset + 1];
+					final Symbol false = _symbols[offset + 1];
 					 return ;
 				}
 			},
-			new Action() {	// [76] Exp4 = NULL
+			new Action() {	// [80] Exp4 = TRUE.true
+				public Symbol reduce(Symbol[] _symbols, int offset) {
+					final Symbol true = _symbols[offset + 1];
+					 return ;
+				}
+			},
+			new Action() {	// [81] Exp4 = NULL
 				public Symbol reduce(Symbol[] _symbols, int offset) {
 					 return ;
 				}
 			},
-			new Action() {	// [77] Exp4 = INT.int
+			new Action() {	// [82] Exp4 = INT.int
 				public Symbol reduce(Symbol[] _symbols, int offset) {
 					final Symbol int = _symbols[offset + 1];
 					 return ;
 				}
 			},
-			new Action() {	// [78] Exp4 = FLOAT.float
+			new Action() {	// [83] Exp4 = FLOAT.float
 				public Symbol reduce(Symbol[] _symbols, int offset) {
 					final Symbol float = _symbols[offset + 1];
 					 return ;
 				}
 			},
-			new Action() {	// [79] Exp4 = CHAR.char
+			new Action() {	// [84] Exp4 = CHAR.char
 				public Symbol reduce(Symbol[] _symbols, int offset) {
 					final Symbol char = _symbols[offset + 1];
 					 return ;
 				}
 			},
-			new Action() {	// [80] Exp4 = LValue.lValue
+			new Action() {	// [85] Exp4 = LValue.lValue
 				public Symbol reduce(Symbol[] _symbols, int offset) {
 					final Symbol _symbol_lValue = _symbols[offset + 1];
 					final Node lValue = (Node) _symbol_lValue.value;
 					 return ;
 				}
 			},
-			new Action() {	// [81] Exp4 = OPEN_PARENTHESIS Exp.exp CLOSE_PARENTHESIS
+			new Action() {	// [86] Exp4 = OPEN_PARENTHESIS Exp.exp CLOSE_PARENTHESIS
 				public Symbol reduce(Symbol[] _symbols, int offset) {
 					final Symbol _symbol_exp = _symbols[offset + 2];
 					final Node exp = (Node) _symbol_exp.value;
 					 return ;
 				}
 			},
-			Action.NONE,  	// [82] opt$VectorDef = 
-			Action.RETURN,	// [83] opt$VectorDef = VectorDef
-			new Action() {	// [84] Exp4 = NEW Type.type opt$VectorDef.vectorDef
+			Action.NONE,  	// [87] opt$VectorDef = 
+			Action.RETURN,	// [88] opt$VectorDef = VectorDef
+			new Action() {	// [89] Exp4 = NEW Type.type opt$VectorDef.vectorDef
 				public Symbol reduce(Symbol[] _symbols, int offset) {
 					final Symbol _symbol_type = _symbols[offset + 2];
 					final Node type = (Node) _symbol_type.value;
@@ -473,7 +501,7 @@ public class LangParser extends Parser {
 					 return ;
 				}
 			},
-			new Action() {	// [85] Exp4 = ID OPEN_PARENTHESIS opt$Exps.exps CLOSE_PARENTHESIS OPEN_BRACKET Exp.exp CLOSE_BRACKET
+			new Action() {	// [90] Exp4 = ID OPEN_PARENTHESIS opt$Exps.exps CLOSE_PARENTHESIS OPEN_BRACKET Exp.exp CLOSE_BRACKET
 				public Symbol reduce(Symbol[] _symbols, int offset) {
 					final Symbol _symbol_exps = _symbols[offset + 3];
 					final Node exps = (Node) _symbol_exps.value;
@@ -482,14 +510,14 @@ public class LangParser extends Parser {
 					 return ;
 				}
 			},
-			RETURN2,	// [86] VectorDef = OPEN_BRACKET Exp.exp CLOSE_BRACKET
-			new Action() {	// [87] LValue = ID.id
+			RETURN2,	// [91] VectorDef = OPEN_BRACKET Exp.exp CLOSE_BRACKET
+			new Action() {	// [92] LValue = ID.id
 				public Symbol reduce(Symbol[] _symbols, int offset) {
 					final Symbol id = _symbols[offset + 1];
 					 return ;
 				}
 			},
-			new Action() {	// [88] LValue = LValue.lValue OPEN_BRACKET Exp.exp CLOSE_BRACKET
+			new Action() {	// [93] LValue = LValue.lValue OPEN_BRACKET Exp.exp CLOSE_BRACKET
 				public Symbol reduce(Symbol[] _symbols, int offset) {
 					final Symbol _symbol_lValue = _symbols[offset + 1];
 					final Node lValue = (Node) _symbol_lValue.value;
@@ -498,7 +526,7 @@ public class LangParser extends Parser {
 					 return ;
 				}
 			},
-			new Action() {	// [89] LValue = LValue.lValue DOT ID.id
+			new Action() {	// [94] LValue = LValue.lValue DOT ID.id
 				public Symbol reduce(Symbol[] _symbols, int offset) {
 					final Symbol _symbol_lValue = _symbols[offset + 1];
 					final Node lValue = (Node) _symbol_lValue.value;
@@ -506,19 +534,19 @@ public class LangParser extends Parser {
 					 return ;
 				}
 			},
-			new Action() {	// [90] lst$ExpList = ExpList
+			new Action() {	// [95] lst$ExpList = ExpList
 				public Symbol reduce(Symbol[] _symbols, int offset) {
 					ArrayList lst = new ArrayList(); lst.add(_symbols[offset + 1]); return new Symbol(lst);
 				}
 			},
-			new Action() {	// [91] lst$ExpList = lst$ExpList ExpList
+			new Action() {	// [96] lst$ExpList = lst$ExpList ExpList
 				public Symbol reduce(Symbol[] _symbols, int offset) {
 					((ArrayList) _symbols[offset + 1].value).add(_symbols[offset + 2]); return _symbols[offset + 1];
 				}
 			},
-			Action.NONE,  	// [92] opt$lst$ExpList = 
-			Action.RETURN,	// [93] opt$lst$ExpList = lst$ExpList
-			new Action() {	// [94] Exps = Exp.exp opt$lst$ExpList.expList
+			Action.NONE,  	// [97] opt$lst$ExpList = 
+			Action.RETURN,	// [98] opt$lst$ExpList = lst$ExpList
+			new Action() {	// [99] Exps = Exp.exp opt$lst$ExpList.expList
 				public Symbol reduce(Symbol[] _symbols, int offset) {
 					final Symbol _symbol_exp = _symbols[offset + 1];
 					final Node exp = (Node) _symbol_exp.value;
@@ -526,7 +554,7 @@ public class LangParser extends Parser {
 					 return ;
 				}
 			},
-			RETURN2	// [95] ExpList = COMMA Exp.exp
+			RETURN2	// [100] ExpList = COMMA Exp.exp
 		};
 
  good = true;

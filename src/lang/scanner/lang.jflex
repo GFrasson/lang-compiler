@@ -9,6 +9,8 @@
   */
 package lang.scanner;
 
+import beaver.Symbol;
+import beaver.Scanner;
 import java.util.HashMap;
 %%
 
@@ -16,9 +18,14 @@ import java.util.HashMap;
 %line
 %column
 %class LangScanner
+%extends Scanner
 %public
 %function nextToken
 %type Token
+%yylexthrow Scanner.Exception
+%eofval{
+	return newToken(Terminals.EOF, "end-of-file");
+%eofval}
 
 %{
     /* Código arbitrário pode ser inserido diretamente no analisador dessa forma. 
@@ -31,14 +38,14 @@ import java.util.HashMap;
        return tokensAmount;
     }
 
-    private Token symbol(TOKEN_TYPE tokenType) {
+    private Token symbol(short terminal) {
         tokensAmount++;
-        return new Token(tokenType, yytext(), yyline + 1, yycolumn + 1);   
+        return new Token(terminal, yytext(), yyline + 1, yycolumn + 1, yylength());   
     }
 
-    private Token symbol(TOKEN_TYPE tokenType, Object value) {
+    private Token symbol(short terminal, Object value) {
         tokensAmount++;
-        return new Token(tokenType, yytext(), value, yyline + 1, yycolumn + 1);
+        return new Token(terminal, yytext(), value, yyline + 1, yycolumn + 1, yylength());
     }
 %}
 
@@ -63,7 +70,6 @@ import java.util.HashMap;
   TypeName = [:uppercase:] ([:lowercase:] | [:uppercase:] | [:digit:] | "_")* // [A-Z] ([a-z] | [A-Z] | [0-9] | _)*
   SpecialCharacter = "\\r" | "\\n" | "\\t" | "\\b" | "\\\\" | "\\'"
   Character = "'" ([^"'" "\\"] | {SpecialCharacter}) "'" //Regra para capturar caracteres não reconhecidos ([^])
-  Boolean = "true" | "false"
   Null = "null"
   LineComment = "--" (.)* {EndOfLine}
   
@@ -72,64 +78,69 @@ import java.util.HashMap;
 %%
 
 <YYINITIAL>{
-    {Float}         { return symbol(TOKEN_TYPE.FLOAT, Float.parseFloat(yytext())); }
-    {Integer}       { return symbol(TOKEN_TYPE.INT, Integer.parseInt(yytext())); }
-    {Boolean}       { return symbol(TOKEN_TYPE.BOOLEAN, "true".compareTo(yytext()) == 0 ? true : false); }
-    {Null}          { return symbol(TOKEN_TYPE.NULL); }
+    {Float}         { return symbol(Terminals.FLOAT, Float.parseFloat(yytext())); }
+    {Integer}       { return symbol(Terminals.INT, Integer.parseInt(yytext())); }
+    "false"         { return symbol(Terminals.FALSE, false); }
+    "true"          { return symbol(Terminals.TRUE, true); }
+    {Null}          { return symbol(Terminals.NULL); }
 
     //CMD
-    "if"            { return symbol(TOKEN_TYPE.IF); }
-    "else"          { return symbol(TOKEN_TYPE.ELSE); }
-    "data"          { return symbol(TOKEN_TYPE.DATA); }
-    "iterate"       { return symbol(TOKEN_TYPE.ITERATE); }
-    "return"        { return symbol(TOKEN_TYPE.RETURN); }
-    "print"         { return symbol(TOKEN_TYPE.PRINT); }
-    "read"          { return symbol(TOKEN_TYPE.READ); }
-    "new"           { return symbol(TOKEN_TYPE.NEW); }
+    "if"            { return symbol(Terminals.IF); }
+    "else"          { return symbol(Terminals.ELSE); }
+    "data"          { return symbol(Terminals.DATA); }
+    "iterate"       { return symbol(Terminals.ITERATE); }
+    "return"        { return symbol(Terminals.RETURN); }
+    "print"         { return symbol(Terminals.PRINT); }
+    "read"          { return symbol(Terminals.READ); }
+    "new"           { return symbol(Terminals.NEW); }
 
-    {Identifier}    { return symbol(TOKEN_TYPE.ID); }
-    {TypeName}      { return symbol(TOKEN_TYPE.TYPE_NAME); }
+    {Identifier}    { return symbol(Terminals.ID); }
+    "Int"           { return symbol(Terminals.TYPE_INT); }
+    "Float"         { return symbol(Terminals.TYPE_FLOAT); } 
+    "Bool"          { return symbol(Terminals.TYPE_BOOL); } 
+    "Char"          { return symbol(Terminals.TYPE_CHAR); }
+    {TypeName}      { return symbol(Terminals.TYPE_NAME); }
     {Character}     {
                       String text = yytext();
                       String value = text.substring(1);
                       value = value.substring(0, value.length() - 1);
 
                       if (value.length() == 1) {
-                        return symbol(TOKEN_TYPE.CHAR, value.toCharArray()[0]);
+                        return symbol(Terminals.CHAR, value.toCharArray()[0]);
                       }
 
                       if (this.specialCharacters.containsKey(value)) {
-                        return symbol(TOKEN_TYPE.CHAR, this.specialCharacters.get(value));
+                        return symbol(Terminals.CHAR, this.specialCharacters.get(value));
                       }
                     }
     {WhiteSpace}    {}
-    {LineComment}   {}
+    {LineComment}   {} 
 
    //OPERADORES E SEPARADORES
     "{-"            { yybegin(COMMENT); }
-    "("             { return symbol(TOKEN_TYPE.OPEN_PARENTHESIS); }
-    ")"             { return symbol(TOKEN_TYPE.CLOSE_PARENTHESIS); }
-    "["             { return symbol(TOKEN_TYPE.OPEN_BRACKET); }
-    "]"             { return symbol(TOKEN_TYPE.CLOSE_BRACKET); }
-    "{"             { return symbol(TOKEN_TYPE.OPEN_CURLY_BRACE); }
-    "}"             { return symbol(TOKEN_TYPE.CLOSE_CURLY_BRACE); }
-    ">"             { return symbol(TOKEN_TYPE.GREATER_THAN); }
-    "<"             { return symbol(TOKEN_TYPE.LESS_THAN); }
-    ";"             { return symbol(TOKEN_TYPE.SEMICOLON); }
-    "::"            { return symbol(TOKEN_TYPE.DOUBLE_COLON); }
-    ":"             { return symbol(TOKEN_TYPE.COLON); }
-    "."             { return symbol(TOKEN_TYPE.DOT); }
-    ","             { return symbol(TOKEN_TYPE.COMMA); }
-    "=="            { return symbol(TOKEN_TYPE.COMPARISON); }
-    "="             { return symbol(TOKEN_TYPE.EQUAL); }
-    "!="            { return symbol(TOKEN_TYPE.NOT_EQUAL); }
-    "+"             { return symbol(TOKEN_TYPE.PLUS); }
-    "-"             { return symbol(TOKEN_TYPE.MINUS); }
-    "*"             { return symbol(TOKEN_TYPE.TIMES); }
-    "/"             { return symbol(TOKEN_TYPE.DIVISION); }
-    "%"             { return symbol(TOKEN_TYPE.MODULUS); }
-    "&&"            { return symbol(TOKEN_TYPE.AND); }
-    "!"             { return symbol(TOKEN_TYPE.NOT); }
+    "("             { return symbol(Terminals.OPEN_PARENTHESIS); }
+    ")"             { return symbol(Terminals.CLOSE_PARENTHESIS); }
+    "["             { return symbol(Terminals.OPEN_BRACKET); }
+    "]"             { return symbol(Terminals.CLOSE_BRACKET); }
+    "{"             { return symbol(Terminals.OPEN_CURLY_BRACE); }
+    "}"             { return symbol(Terminals.CLOSE_CURLY_BRACE); }
+    ">"             { return symbol(Terminals.GREATER_THAN); }
+    "<"             { return symbol(Terminals.LESS_THAN); }
+    ";"             { return symbol(Terminals.SEMICOLON); }
+    "::"            { return symbol(Terminals.DOUBLE_COLON); }
+    ":"             { return symbol(Terminals.COLON); }
+    "."             { return symbol(Terminals.DOT); }
+    ","             { return symbol(Terminals.COMMA); }
+    "=="            { return symbol(Terminals.COMPARISON); }
+    "="             { return symbol(Terminals.EQUAL); }
+    "!="            { return symbol(Terminals.NOT_EQUAL); }
+    "+"             { return symbol(Terminals.PLUS); }
+    "-"             { return symbol(Terminals.MINUS); }
+    "*"             { return symbol(Terminals.TIMES); }
+    "/"             { return symbol(Terminals.DIVISION); }
+    "%"             { return symbol(Terminals.MODULUS); }
+    "&&"            { return symbol(Terminals.AND); }
+    "!"             { return symbol(Terminals.NOT); }
 }
 
 <COMMENT>{

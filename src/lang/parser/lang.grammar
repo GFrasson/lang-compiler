@@ -34,26 +34,32 @@
 
 %init {: good = true; :};
 
+%typeof INT = "Integer";
+%typeof FLOAT = "Float";
+%typeof CHAR = "Character";
+%typeof FALSE = "Boolean";
+%typeof TRUE = "Boolean";
 %typeof Prog = "Node";
 %typeof Def = "Node";
 %typeof Data = "Node";
 %typeof Decl = "Node";
 %typeof Fun = "Node";
+%typeof ReturnType = "Type";
 %typeof Params = "Node";
 %typeof Type = "Node";
 %typeof BType = "Node";
 %typeof Cmd = "Node";
-%typeof Exp = "Node";
+%typeof Exp = "Expression";
 %typeof LValue = "Node";
 %typeof Exps = "Node";
 
 %goal Prog;
 
-Prog = Def.def*      {: return def; :}
+Prog = Def.def*      {: return Program(def.data, def.fun); :}
      ;
 
-Def = Data.data      {: return ; :}
-    | Fun.fun        {: return ; :}
+Def = Data.data      {: return data; :}
+    | Fun.fun        {: return fun; :}
     ;
 
 Data = DATA TYPE_NAME.typeName OPEN_CURLY_BRACE Decl.decl* CLOSE_CURLY_BRACE      {: return ; :}
@@ -62,11 +68,11 @@ Data = DATA TYPE_NAME.typeName OPEN_CURLY_BRACE Decl.decl* CLOSE_CURLY_BRACE    
 Decl = ID.id DOUBLE_COLON Type SEMICOLON       {: return ; :}
      ;
 
-Fun = ID.id OPEN_PARENTHESIS Params.params? CLOSE_PARENTHESIS TypeDef.typeDef? OPEN_CURLY_BRACE Cmd.cmd* CLOSE_CURLY_BRACE     {: return ; :}
+Fun = ID.id OPEN_PARENTHESIS Params.params? CLOSE_PARENTHESIS ReturnType.returnType? OPEN_CURLY_BRACE Cmd.cmd* CLOSE_CURLY_BRACE     {: return new Function(id, params, returnType, cmd); :}
     ;
 
-TypeDef = COLON Type TypeList*
-        ;
+ReturnType = COLON Type.type TypeList.typeList* 
+           ;
 
 TypeList = COMMA Type
          ;
@@ -108,39 +114,39 @@ LValueList = COMMA LValue.lvalue
 ReturnParams = LESS_THAN LValue.lvalue LValueList* GREATER_THAN
              ;
 
-Exp = Exp.expLeft AND Exp2.expRight    {: return ; :}
+Exp = Exp.expLeft AND Exp2.expRight    {: return new And(expLeft, expRight); :}
     | Exp2 
     ;
 
-Exp2 = Exp2.expLeft COMPARISON Exp3.expRight    {: return ; :}
-     | Exp2.expLeft NOT_EQUAL Exp3.expRight    {: return ; :} 
+Exp2 = Exp2.expLeft COMPARISON Exp3.expRight      {: return new Equals(expLeft, expRight); :}
+     | Exp2.expLeft NOT_EQUAL Exp3.expRight       {: return new NotEqual(expLeft, expRight); :} 
      | Exp3
      ;
 
-Exp3 = Exp3.expLeft LESS_THAN Exp4.expRight   {: return ; :}
+Exp3 = Exp3.expLeft LESS_THAN Exp4.expRight   {: return new LessThan(expLeft, expRight); :}
      | Exp4
      ;
 
-Exp4 = Exp.expLeft PLUS Exp.expRight    {: return ; :}
-     | Exp.expLeft MINUS Exp.expRight    {: return ; :}
-     | Exp.expLeft TIMES Exp.expRight    {: return ; :}
-     | Exp.expLeft DIVISION Exp.expRight    {: return ; :}
-     | Exp.expLeft MODULUS Exp.expRight    {: return ; :}
-     | NOT Exp.exp    {: return ; :}
-     | MINUS Exp.expRight    {: return ; :}
-     | FALSE.false    {: return ; :}
-     | TRUE.true    {: return ; :}
-     | NULL    {: return ; :}
-     | INT.int    {: return ; :}
-     | FLOAT.float    {: return ; :}
-     | CHAR.char    {: return ; :}
-     | LValue.lValue    {: return ; :}
-     | OPEN_PARENTHESIS Exp.exp CLOSE_PARENTHESIS    {: return ; :}
-     | NEW Type.type VectorDef.vectorDef?    {: return ; :}
-     | ID OPEN_PARENTHESIS Exps.exps? CLOSE_PARENTHESIS OPEN_BRACKET Exp.exp CLOSE_BRACKET    {: return ; :}
+Exp4 = Exp.expLeft PLUS Exp.expRight                   {: return new Add(expLeft, expRight); :}
+     | Exp.expLeft MINUS Exp.expRight                  {: return new Minus(expLeft, expRight); :}
+     | Exp.expLeft TIMES Exp.expRight                  {: return new Multiplication(expLeft, expRight); :}
+     | Exp.expLeft DIVISION Exp.expRight               {: return new Division(expLeft, expRight); :}
+     | Exp.expLeft MODULUS Exp.expRight                {: return new Modulus(expLeft, expRight); :}
+     | NOT Exp.exp                                     {: return new Not(exp); :}
+     | MINUS Exp.exp                                   {: return new UnaryMinus(exp); :}
+     | FALSE.false                                     {: return new False(); :}
+     | TRUE.true                                       {: return new True(); :}
+     | NULL                                            {: return new Null(); :}
+     | INT.literalInt                                  {: return new LiteralInt(literalInt); :}
+     | FLOAT.literalFloat                              {: return new LiteralFloat(literalFloat); :}
+     | CHAR.literalChar                                {: return new LiteralChar(literalChar); :}
+     | LValue.lValue                                   {: return lValue; :}
+     | OPEN_PARENTHESIS Exp.exp CLOSE_PARENTHESIS      {: return exp; :}
+     | NEW Type.type VectorDef.vectorDef?              {: return ; :}
+     | ID.id OPEN_PARENTHESIS Exps.arguments? CLOSE_PARENTHESIS OPEN_BRACKET Exp.returnIndex CLOSE_BRACKET    {: return new Call(id, arguments, returnIndex); :}
      ;
 
-VectorDef = OPEN_BRACKET Exp.exp CLOSE_BRACKET
+VectorDef = OPEN_BRACKET Exp.exp CLOSE_BRACKET    {: return exp; :}
           ;
 
 LValue = ID.id   {: return ; :}

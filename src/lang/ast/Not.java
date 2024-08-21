@@ -1,29 +1,35 @@
 package ast;
 
 /*
+* Equipe:
+* ÁGATA MEIRELES CARVALHO - 202065001C
+* GABRIEL FRASSON COSTA - 202035001
+*/
+
+/*
  * Esta classe representa uma expressão negação.
- * Expr + Expr
+ * !Expr
  */
  
 import java.util.HashMap; 
 import visitors.Visitor;
 
-public class Not extends Expr {
+public class Not extends Expression {
       
-      Expr e; 
+      Expr expr; 
       
-      public Not(Expr l){
-           e = l;
+      public Not(Expr expr){
+           this.expr = expr;
       }
       
-      public Expr getExpr(){ return e; }
+      public Expr getExpr(){ return expr; }
       public String toString(){
-         String s = e.toString();
-         if(! (e instanceof NInt || e instanceof NFloat || e instanceof Var || e instanceof True || e instanceof False)){
-            s = "!" + s;
+         String exprToString = expr.toString();
+         if(! (expr instanceof NInt || expr instanceof NFloat || expr instanceof Var || expr instanceof True || expr instanceof False)){
+            exprToString = "!" + exprToString;
          }
-         return   s ;
+         return   exprToString ;
       }
       
-      public void accept(Visitor v){ v.visit(this);}
+      public void accept(Visitor visitor){ visitor.visit(this);}
 }

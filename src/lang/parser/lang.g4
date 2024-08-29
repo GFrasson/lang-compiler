@@ -25,7 +25,7 @@ data returns [DataRegister ast]
 
 decl returns [Declaration ast]
   : ID DOUBLE_COLON type SEMICOLON       { $ast = new Declaration($ID, $type.ast); }
-  ;
+  ; 
 
 fun returns [Function ast]
   : ID OPEN_PARENTHESIS params? CLOSE_PARENTHESIS (COLON type1=type (COMMA typeList=type)*)? OPEN_CURLY_BRACE cmd* CLOSE_CURLY_BRACE
@@ -62,7 +62,62 @@ bType returns [Type ast]
   ;
 
 cmd returns [Node ast]
-  :;
+  : OPEN_CURLY_BRACE cmd* CLOSE_CURLY_BRACE           { $ast = $cmd.ast; }
+  | IF OPEN_PARENTHESIS condition=exp CLOSE_PARENTHESIS then=cmd     { $ast = new If($condition.ast, $then.ast); }
+  | IF OPEN_PARENTHESIS condition=exp CLOSE_PARENTHESIS then=cmd ELSE else=cmd    { $ast = new If($exp.ast, $then.ast, $else.ast); }
+  | ITERATE OPEN_PARENTHESIS condition=exp CLOSE_PARENTHESIS body=cmd    { $ast = new Iterate($condition.ast, $body.ast); }
+  | READ lvalue SEMICOLON     { $ast = new Read($lvalue.ast); }
+  | PRINT exp SEMICOLON       { $ast = new Print($exp.ast); }
+  | RETURN { expList = new ArrayList<Expression>(); } exp1=exp { expList.add($exp1.ast); } (COMMA exp2=exp { expList.add($exp2.ast); })* SEMICOLON
+    {
+      Expression[] expressionsArray = new Expression[expList.size()];
+      expressionsArray = expList.toArray(expressionsArray);
+
+      $ast = new Return(expressionsArray);
+    }
+  | lvalue EQUAL exp SEMICOLON          { $ast = new Assignment($lValue.ast, $exp.ast); }
+  | ID OPEN_PARENTHESIS parameters=exps? CLOSE_PARENTHESIS (LESS_THAN lvalue (COMMA lvalue)* GREATER_THAN)? SEMICOLON    { $ast = new Call(); }
+  ;
+
+exp returns [Expression ast]
+  : expLeft=exp AND expRight=exp            { $ast = new And($expLeft.ast, $expRight.ast); }
+  | expLeft=exp COMPARISON expRight=exp     { $ast = new Equals($expLeft.ast, $expRight.ast); }
+  | expLeft=exp NOT_EQUAL expRight=exp      { $ast = new NotEqual($expLeft.ast, $expRight.ast); }
+  | expLeft=exp LESS_THAN expRight=exp      { $ast = new LessThan($expLeft.ast, $expRight.ast); }
+  | expLeft=exp PLUS expRight=exp           { $ast = new Add($expLeft.ast, $expRight.ast); }
+  | expLeft=exp MINUS expRight=exp          { $ast = new Minus($expLeft.ast, $expRight.ast); }
+  | expLeft=exp TIMES expRight=exp          { $ast = new Multiplication($expLeft.ast, $expRight.ast); }
+  | expLeft=exp DIVISION expRight=exp              { $ast = new Division($expLeft.ast, $expRight.ast); }
+  | expLeft=exp MODULUS expRight=exp           { $ast = new Modulus($expLeft.ast, $expRight.ast); }
+  | <assoc=right> NOT exp                                     { $ast = new Not($exp.ast); }
+  | <assoc=right> MINUS exp                                   { $ast = new UnaryMinus($exp.ast); }
+  | FALSE                                     { $ast = new False(); }
+  | TRUE                                       { $ast = new True(); }
+  | NULL                                            { $ast = new Null(); }
+  | INT                                  { $ast = new LiteralInt(Integer.parseInt($INT)); }
+  | FLOAT                              { $ast = new LiteralFloat(Float.parseFloat($FLOAT)); }
+  | CHAR                                { $ast = new LiteralChar($CHAR); }
+  | lvalue                                   { $ast = $lValue.ast; }
+  | OPEN_PARENTHESIS exp CLOSE_PARENTHESIS      { $ast = $exp.ast; }
+  | NEW type (OPEN_BRACKET exp CLOSE_BRACKET)?              { $ast = ; }
+  | ID OPEN_PARENTHESIS (arguments=exps)? CLOSE_PARENTHESIS OPEN_BRACKET returnIndex=exp CLOSE_BRACKET    { $ast = new Call($ID, $arguments.ast, $returnIndex.ast); }
+  ;
+
+lvalue returns [Variable ast]
+  : ID                  { $ast = new Variable($ID); }
+  | lvalue OPEN_BRACKET exp CLOSE_BRACKET  { $ast = new Variable($ID, $exp.ast); }
+  | lvalue DOT ID   { $ast = ; }
+  ;
+
+exps returns [Expression[] ast]
+  : { expList = new ArrayList<Expression>(); } exp1=exp { expList.add($exp1.ast); } (COMMA exp2=exp { expList.add($exp2.ast); })*
+    {
+      Expression[] expressionsArray = new Expression[expList.size()];
+      expressionsArray = expList.toArray(expressionsArray);
+
+      $ast = expressionsArray;
+    }
+  ;
 
 /* Regras léxicas */
 

@@ -1,18 +1,22 @@
 package lang.ast.nodes.base;
 
-import beaver.Symbol;
 import lang.ast.SuperNode;
 import lang.visitors.Visitable;
 
-public abstract class Node extends Symbol implements Visitable, SuperNode {
-  public Node() {
+public abstract class Node implements Visitable, SuperNode {
+  private int line;
+  private int column;
+
+  public Node(int line, int column){
+    this.line = line;
+    this.column = column;
   }
 
   public int getLine() {
-    return super.getLine(getStart());
+    return this.line;
   }
 
   public int getColumn() {
-    return super.getColumn(getStart());
+    return this.column;
   }
 }

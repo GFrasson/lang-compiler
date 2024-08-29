@@ -9,19 +9,21 @@ import lang.ast.nodes.expressions.base.Expression;
 import lang.visitors.Visitor;
 
 public class Return extends Node {
-  private Expression expression;
+  private Expression[] expressions;
 
-  public Return(Expression expression) {
-    this.expression = expression;
+  public Return(int line, int column, Expression[] expressions) {
+    super(line, column);
+    
+    this.expressions = expressions;
   }
 
-  public Expression getExpression() {
-    return expression;
+  public Expression[] getExpressions() {
+    return expressions;
   }
 
   // @Override
   public String toString() {
-    return "return " + expression.toString() + ";";
+    return "return " + expressions.toString() + ";";
   }
 
   public void accept(Visitor visitor) {

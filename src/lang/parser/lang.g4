@@ -75,7 +75,7 @@ cmd returns [Node ast]
 
       $ast = new Return(expressionsArray);
     }
-  | lvalue EQUAL exp SEMICOLON          { $ast = new Assignment($lValue.ast, $exp.ast); }
+  | lvalue EQUAL exp SEMICOLON          { $ast = new Assignment($lvalue.ast, $exp.ast); }
   | ID OPEN_PARENTHESIS parameters=exps? CLOSE_PARENTHESIS (LESS_THAN lvalue (COMMA lvalue)* GREATER_THAN)? SEMICOLON    { $ast = new Call(); }
   ;
 
@@ -97,7 +97,7 @@ exp returns [Expression ast]
   | INT                                  { $ast = new LiteralInt(Integer.parseInt($INT)); }
   | FLOAT                              { $ast = new LiteralFloat(Float.parseFloat($FLOAT)); }
   | CHAR                                { $ast = new LiteralChar($CHAR); }
-  | lvalue                                   { $ast = $lValue.ast; }
+  | lvalue                                   { $ast = $lvalue.ast; }
   | OPEN_PARENTHESIS exp CLOSE_PARENTHESIS      { $ast = $exp.ast; }
   | NEW type (OPEN_BRACKET exp CLOSE_BRACKET)?              { $ast = ; }
   | ID OPEN_PARENTHESIS (arguments=exps)? CLOSE_PARENTHESIS OPEN_BRACKET returnIndex=exp CLOSE_BRACKET    { $ast = new Call($ID, $arguments.ast, $returnIndex.ast); }

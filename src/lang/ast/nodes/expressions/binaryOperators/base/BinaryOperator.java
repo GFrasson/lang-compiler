@@ -12,7 +12,9 @@ public abstract class BinaryOperator extends Expression {
   private Expression left;
   private Expression right;
 
-  public BinaryOperator(Expression left, Expression right) {
+  public BinaryOperator(Expression left, Expression right, int line, int column) {
+    super(line, column);
+    
     this.left = left;
     this.right = right;
   }

@@ -11,7 +11,7 @@ import lang.visitors.Visitor;
 public class Return extends Node {
   private Expression[] expressions;
 
-  public Return(int line, int column, Expression[] expressions) {
+  public Return(Expression[] expressions, int line, int column) {
     super(line, column);
     
     this.expressions = expressions;

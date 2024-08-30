@@ -10,7 +10,8 @@ import lang.ast.nodes.expressions.base.Expression;
 import lang.visitors.Visitor;
 
 public class False extends Expression {
-  public False() {
+  public False(int line, int column) {
+    super(line, column);
   }
 
   public boolean getValue() {

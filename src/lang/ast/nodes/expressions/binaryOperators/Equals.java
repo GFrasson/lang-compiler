@@ -11,8 +11,8 @@ import lang.ast.nodes.expressions.binaryOperators.base.BinaryOperator;
 import lang.visitors.Visitor;
 
 public class Equals extends BinaryOperator {
-  public Equals(Expression left, Expression right) {
-    super(left, right);
+  public Equals(Expression left, Expression right, int line, int column) {
+    super(left, right, line, column);    
   }
 
   public String toString() {

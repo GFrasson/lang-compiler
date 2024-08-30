@@ -1,6 +1,7 @@
 package lang.ast.nodes.expressions;
 
 import lang.ast.nodes.expressions.base.Expression;
+import lang.ast.nodes.expressions.variables.base.Variable;
 
 /*
  * Esta classe representa uma chamada de função.
@@ -13,16 +14,29 @@ public class Call extends Expression {
   private String functionName;
   private Expression[] arguments;
   private Expression returnIndex;
+  private Variable[] variables;
 
-  public Call(String functionName, Expression[] arguments) {
+  public Call(String functionName, Expression[] arguments, int line, int column) {
+    super(line, column);
+    
     this.functionName = functionName;
     this.arguments = arguments;
   }
 
-  public Call(String functionName, Expression[] arguments, Expression returnIndex) {
+  public Call(String functionName, Expression[] arguments, Expression returnIndex, int line, int column) {
+    super(line, column);
+    
     this.functionName = functionName;
     this.arguments = arguments;
     this.returnIndex = returnIndex;
+  }
+
+  public Call(String functionName, Expression[] arguments, Variable[] variables, int line, int column) {
+    super(line, column);
+    
+    this.functionName = functionName;
+    this.arguments = arguments;
+    this.variables = variables;
   }
 
   public String getFunctionName() {
@@ -35,6 +49,10 @@ public class Call extends Expression {
 
   public Expression getReturnIndex() {
     return returnIndex;
+  }
+
+  public Variable[] getVariables() {
+    return variables;
   }
 
   // @Override

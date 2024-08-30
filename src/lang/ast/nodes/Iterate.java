@@ -4,17 +4,19 @@ import lang.ast.nodes.base.Node;
 import lang.ast.nodes.expressions.base.Expression;
 
 /*
- * Esta classe representa um comando while.
- * While (condition) { body }
+ * Esta classe representa um comando iterate.
+ * Iterate (condition) { body }
  */
 
 import lang.visitors.Visitor;
 
-public class While extends Node {
+public class Iterate extends Node {
   private Expression condition;
   private Node body;
 
-  public While(Expression condition, Node body) {
+  public Iterate(Expression condition, Node body, int line, int column) {
+    super(line, column);
+    
     this.condition = condition;
     this.body = body;
   }

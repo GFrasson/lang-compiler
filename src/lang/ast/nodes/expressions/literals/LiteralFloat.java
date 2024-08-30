@@ -10,7 +10,9 @@ import lang.visitors.Visitor;
 public class LiteralFloat extends Expression {
   private float value;
 
-  public LiteralFloat(float value) {
+  public LiteralFloat(float value, int line, int column) {
+    super(line, column);
+    
     this.value = value;
   }
 

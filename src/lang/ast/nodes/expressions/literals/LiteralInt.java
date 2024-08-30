@@ -10,7 +10,9 @@ import lang.visitors.Visitor;
 public class LiteralInt extends Expression {
   private int value;
 
-  public LiteralInt(int value) {
+  public LiteralInt(int value, int line, int column) {
+    super(line, column);
+    
     this.value = value;
   }
 

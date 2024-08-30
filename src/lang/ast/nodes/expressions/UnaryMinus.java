@@ -14,7 +14,9 @@ import lang.visitors.Visitor;
 public class UnaryMinus extends Expression {
   Expression expression;
 
-  public UnaryMinus(Expression expression) {
+  public UnaryMinus(Expression expression, int line, int column) {
+    super(line, column);
+    
     this.expression = expression;
   }
 

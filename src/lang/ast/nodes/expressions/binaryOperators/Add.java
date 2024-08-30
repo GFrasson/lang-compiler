@@ -11,8 +11,8 @@ import lang.ast.nodes.expressions.binaryOperators.base.BinaryOperator;
 import lang.visitors.Visitor;
 
 public class Add extends BinaryOperator {
-  public Add(Expression left, Expression right) {
-    super(left, right);
+  public Add(Expression left, Expression right, int line, int column) {
+    super(left, right, line, column);
   }
 
   public String toString() {

@@ -7,16 +7,19 @@ package lang.ast.nodes;
 import java.util.HashMap;
 
 import lang.ast.nodes.base.Node;
-import lang.ast.nodes.expressions.Variable;
+import lang.ast.nodes.expressions.base.Expression;
+import lang.ast.nodes.expressions.variables.base.Variable;
 import lang.ast.nodes.types.base.Type;
 import lang.visitors.Visitor;
 
 public class Instance extends Node {
   private Variable id;
   private Type type;
-  private Expr size;
+  private Expression size;
 
-  public Instance(Variable id, Type type, Expr size) {
+  public Instance(Variable id, Type type, Expression size, int line, int column) {
+    super(line, column);
+    
     this.id = id;
     this.type = type;
     this.size = size;
@@ -30,7 +33,7 @@ public class Instance extends Node {
     return id;
   }
 
-  public Expr getSize() {
+  public Expression getSize() {
     return size;
   }
 

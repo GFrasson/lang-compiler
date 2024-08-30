@@ -11,7 +11,9 @@ import lang.visitors.Visitor;
 public class ArrayType extends Type {
   private Type argumentType;
 
-  public ArrayType(Type type) {
+  public ArrayType(Type type, int line, int column) {
+    super(line, column);
+    
     argumentType = type;
   }
 

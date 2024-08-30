@@ -10,7 +10,8 @@ import lang.ast.nodes.expressions.base.Expression;
 import lang.visitors.Visitor;
 
 public class Null extends Expression {
-  public Null() {
+  public Null(int line, int column) {
+    super(line, column);
   }
 
   public void getValue() {

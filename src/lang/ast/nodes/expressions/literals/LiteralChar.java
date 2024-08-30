@@ -10,7 +10,9 @@ import lang.visitors.Visitor;
 public class LiteralChar extends Expression {
   private char value;
 
-  public LiteralChar(char value) {
+  public LiteralChar(char value, int line, int column) {
+    super(line, column);
+    
     this.value = value;
   }
 

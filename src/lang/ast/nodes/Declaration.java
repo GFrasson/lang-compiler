@@ -16,7 +16,9 @@ public class Declaration extends Node {
   private String name;
   private Type type;
 
-  public Declaration(String name, Type type) {
+  public Declaration(String name, Type type, int line, int column) {
+    super(line, column);
+    
     this.name = name;
     this.type = type;
   }

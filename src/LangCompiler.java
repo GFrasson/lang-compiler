@@ -27,6 +27,8 @@ public class LangCompiler {
       }
       if (args[0].equals("-byt")) {
         System.out.println("Executando bateria de testes sintáticos:");
+        SuperNode tree = langParser.parseFile(args[0]);
+        System.out.println(tree.toString());
         // TestParser tp = new TestParser(langParser); ;
         return;
       }

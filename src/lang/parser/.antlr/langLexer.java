@@ -1,6 +1,8 @@
 // Generated from /home/gfrasson/projects/ufjf/08periodo/compiladores/lang-compiler/src/lang/parser/lang.g4 by ANTLR 4.13.1
 
-  package lang.parser;
+package lang.parser;
+
+import java.util.HashMap;
 
 import org.antlr.v4.runtime.Lexer;
 import org.antlr.v4.runtime.CharStream;
@@ -104,6 +106,18 @@ public class langLexer extends Lexer {
 	public Vocabulary getVocabulary() {
 		return VOCABULARY;
 	}
+
+
+	HashMap<String, Character> specialCharacters = new HashMap<String, Character>() {{
+	  put("\\n", '\n');
+	  put("\\r", '\r');
+	  put("\\t", '\t');
+	  put("\\b", '\b');
+	  put("\\\\", '\\');
+	  put("\\'", '\'');
+	}};
+
+	int count = 0;
 
 
 	public langLexer(CharStream input) {

@@ -16,7 +16,9 @@ public class DataRegister extends Definition {
   private String typeName;
   private Declaration[] declarations;
 
-  public DataRegister(String typeName, Declaration[] declarations) {
+  public DataRegister(String typeName, Declaration[] declarations, int line, int column) {
+    super(line, column);
+    
     this.typeName = typeName;
     this.declarations = declarations;
   }

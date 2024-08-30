@@ -8,6 +8,7 @@ import lang.ast.nodes.base.Node;
  */
 
 public abstract class Definition extends Node {
-  public Definition() {
+  public Definition(int line, int column) {
+    super(line, column);
   }
 }

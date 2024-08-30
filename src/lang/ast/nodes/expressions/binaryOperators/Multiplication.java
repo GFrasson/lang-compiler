@@ -12,8 +12,8 @@ import lang.ast.nodes.expressions.binaryOperators.base.BinaryOperator;
 import lang.visitors.Visitor;
 
 public class Multiplication extends BinaryOperator {
-  public Multiplication(Expression left, Expression right) {
-    super(left, right);
+  public Multiplication(Expression left, Expression right, int line, int column) {
+    super(left, right, line, column);    
   }
 
   // @Override

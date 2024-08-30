@@ -3,6 +3,7 @@ package lang.ast.nodes.expressions;
 import lang.ast.nodes.expressions.base.Expression;
 import lang.ast.nodes.expressions.literals.LiteralFloat;
 import lang.ast.nodes.expressions.literals.LiteralInt;
+import lang.ast.nodes.expressions.variables.base.Variable;
 
 /*
  * Esta classe representa uma expressão negação.
@@ -14,7 +15,9 @@ import lang.visitors.Visitor;
 public class Not extends Expression {
   Expression expression;
 
-  public Not(Expression expression) {
+  public Not(Expression expression, int line, int column) {
+    super(line, column);
+    
     this.expression = expression;
   }
 

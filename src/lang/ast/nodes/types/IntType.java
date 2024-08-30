@@ -8,7 +8,8 @@ import lang.visitors.Visitor;
  * Type
  */
 public class IntType extends Type {
-  public IntType() {
+  public IntType(int line, int column) {
+    super(line, column);
   }
 
   public boolean match(Type type) {

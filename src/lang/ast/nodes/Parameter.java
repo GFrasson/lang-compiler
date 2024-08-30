@@ -12,7 +12,9 @@ public class Parameter extends Node {
   private String name;
   private Type type;
 
-  public Parameter(String name, Type type) {
+  public Parameter(String name, Type type, int line, int column) {
+    super(line, column);
+    
     this.name = name;
     this.type = type;
   }

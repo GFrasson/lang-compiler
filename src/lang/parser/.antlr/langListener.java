@@ -1,4 +1,4 @@
-// Generated from /home/gfrasson/projects/ufjf/08periodo/compiladores/lang-compiler/src/parser/lang.g4 by ANTLR 4.13.1
+// Generated from /home/gfrasson/projects/ufjf/08periodo/compiladores/lang-compiler/src/lang/parser/lang.g4 by ANTLR 4.13.1
 import org.antlr.v4.runtime.tree.ParseTreeListener;
 
 /**
@@ -17,43 +17,113 @@ public interface langListener extends ParseTreeListener {
 	 */
 	void exitProg(langParser.ProgContext ctx);
 	/**
-	 * Enter a parse tree produced by {@link langParser#stmt}.
+	 * Enter a parse tree produced by {@link langParser#def}.
 	 * @param ctx the parse tree
 	 */
-	void enterStmt(langParser.StmtContext ctx);
+	void enterDef(langParser.DefContext ctx);
 	/**
-	 * Exit a parse tree produced by {@link langParser#stmt}.
+	 * Exit a parse tree produced by {@link langParser#def}.
 	 * @param ctx the parse tree
 	 */
-	void exitStmt(langParser.StmtContext ctx);
+	void exitDef(langParser.DefContext ctx);
 	/**
-	 * Enter a parse tree produced by {@link langParser#expr}.
+	 * Enter a parse tree produced by {@link langParser#data}.
 	 * @param ctx the parse tree
 	 */
-	void enterExpr(langParser.ExprContext ctx);
+	void enterData(langParser.DataContext ctx);
 	/**
-	 * Exit a parse tree produced by {@link langParser#expr}.
+	 * Exit a parse tree produced by {@link langParser#data}.
 	 * @param ctx the parse tree
 	 */
-	void exitExpr(langParser.ExprContext ctx);
+	void exitData(langParser.DataContext ctx);
 	/**
-	 * Enter a parse tree produced by {@link langParser#term}.
+	 * Enter a parse tree produced by {@link langParser#decl}.
 	 * @param ctx the parse tree
 	 */
-	void enterTerm(langParser.TermContext ctx);
+	void enterDecl(langParser.DeclContext ctx);
 	/**
-	 * Exit a parse tree produced by {@link langParser#term}.
+	 * Exit a parse tree produced by {@link langParser#decl}.
 	 * @param ctx the parse tree
 	 */
-	void exitTerm(langParser.TermContext ctx);
+	void exitDecl(langParser.DeclContext ctx);
 	/**
-	 * Enter a parse tree produced by {@link langParser#factor}.
+	 * Enter a parse tree produced by {@link langParser#fun}.
 	 * @param ctx the parse tree
 	 */
-	void enterFactor(langParser.FactorContext ctx);
+	void enterFun(langParser.FunContext ctx);
 	/**
-	 * Exit a parse tree produced by {@link langParser#factor}.
+	 * Exit a parse tree produced by {@link langParser#fun}.
 	 * @param ctx the parse tree
 	 */
-	void exitFactor(langParser.FactorContext ctx);
+	void exitFun(langParser.FunContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link langParser#params}.
+	 * @param ctx the parse tree
+	 */
+	void enterParams(langParser.ParamsContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link langParser#params}.
+	 * @param ctx the parse tree
+	 */
+	void exitParams(langParser.ParamsContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link langParser#type}.
+	 * @param ctx the parse tree
+	 */
+	void enterType(langParser.TypeContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link langParser#type}.
+	 * @param ctx the parse tree
+	 */
+	void exitType(langParser.TypeContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link langParser#bType}.
+	 * @param ctx the parse tree
+	 */
+	void enterBType(langParser.BTypeContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link langParser#bType}.
+	 * @param ctx the parse tree
+	 */
+	void exitBType(langParser.BTypeContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link langParser#cmd}.
+	 * @param ctx the parse tree
+	 */
+	void enterCmd(langParser.CmdContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link langParser#cmd}.
+	 * @param ctx the parse tree
+	 */
+	void exitCmd(langParser.CmdContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link langParser#exp}.
+	 * @param ctx the parse tree
+	 */
+	void enterExp(langParser.ExpContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link langParser#exp}.
+	 * @param ctx the parse tree
+	 */
+	void exitExp(langParser.ExpContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link langParser#lvalue}.
+	 * @param ctx the parse tree
+	 */
+	void enterLvalue(langParser.LvalueContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link langParser#lvalue}.
+	 * @param ctx the parse tree
+	 */
+	void exitLvalue(langParser.LvalueContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link langParser#exps}.
+	 * @param ctx the parse tree
+	 */
+	void enterExps(langParser.ExpsContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link langParser#exps}.
+	 * @param ctx the parse tree
+	 */
+	void exitExps(langParser.ExpsContext ctx);
 }

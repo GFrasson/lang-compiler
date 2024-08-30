@@ -12,8 +12,8 @@ import lang.ast.nodes.expressions.binaryOperators.base.BinaryOperator;
 import lang.visitors.Visitor;
 
 public class Subtraction extends BinaryOperator {
-  public Subtraction(Expression left, Expression right) {
-    super(left, right);
+  public Subtraction(Expression left, Expression right, int line, int column) {
+    super(left, right, line, column);    
   }
 
   public String toString() {

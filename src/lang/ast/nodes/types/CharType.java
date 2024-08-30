@@ -4,16 +4,16 @@ import lang.ast.nodes.types.base.Type;
 import lang.visitors.Visitor;
 
 /*
- * Esta classe representa um tipo Float.
+ * Esta classe representa um tipo Char.
  * Expr
  */
-public class FloatType extends Type {
-  public FloatType(int line, int column) {
+public class CharType extends Type {
+  public CharType(int line, int column) {
     super(line, column);
   }
 
   public boolean match(Type type) {
-    return type instanceof FloatType;
+    return type instanceof CharType;
   }
 
   public String toString() {

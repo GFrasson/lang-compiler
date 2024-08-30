@@ -7,6 +7,7 @@ import lang.ast.nodes.base.Node;
  * Expression
  */
 public abstract class Expression extends Node {
-  public Expression() {
+  public Expression(int line, int column) {
+    super(line, column);
   }
 }

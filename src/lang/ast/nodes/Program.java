@@ -14,7 +14,9 @@ import lang.visitors.Visitor;
 public class Program extends Node {
   private Definition[] definitions;
 
-  public Program(Definition[] definitions) {
+  public Program(Definition[] definitions, int line, int column) {
+    super(line, column);
+    
     this.definitions = definitions;
   }
 

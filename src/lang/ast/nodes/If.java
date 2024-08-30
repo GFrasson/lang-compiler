@@ -16,13 +16,17 @@ public class If extends Node {
   private Node thenBody;
   private Node elseBody;
 
-  public If(Expression condition, Node thenBody, Node elseBody) {
+  public If(Expression condition, Node thenBody, Node elseBody, int line, int column) {
+    super(line, column);
+    
     this.condition = condition;
     this.thenBody = thenBody;
     this.elseBody = elseBody;
   }
 
-  public If(Expression condition, Node thenBody) {
+  public If(Expression condition, Node thenBody, int line, int column) {
+    super(line, column);
+    
     this.condition = condition;
     this.thenBody = thenBody;
     this.elseBody = null;

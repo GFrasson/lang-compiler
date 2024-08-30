@@ -11,12 +11,16 @@ public class StatementList extends Node {
   private Node command1;
   private Node command2;
 
-  public StatementList(Node command1, Node command2) {
+  public StatementList(Node command1, Node command2, int line, int column) {
+    super(line, column);
+    
     this.command1 = command1;
     this.command2 = command2;
   }
 
-  public StatementList(Node command1) {
+  public StatementList(Node command1, int line, int column) {
+    super(line, column);
+    
     this.command1 = command1;
     this.command2 = null;
   }

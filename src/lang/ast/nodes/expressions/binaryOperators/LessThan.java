@@ -12,8 +12,8 @@ import lang.ast.nodes.expressions.binaryOperators.base.BinaryOperator;
 import lang.visitors.Visitor;
 
 public class LessThan extends BinaryOperator {
-  public LessThan(Expression left, Expression right) {
-    super(left, right);
+  public LessThan(Expression left, Expression right, int line, int column) {
+    super(left, right, line, column);    
   }
 
   public String toString() {

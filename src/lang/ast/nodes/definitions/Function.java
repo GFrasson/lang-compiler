@@ -18,7 +18,9 @@ public class Function extends Definition {
   private Type[] returnTypes;
   private Node body;
 
-  public Function(String functionName, Parameter[] parameters, Type[] returnTypes, Node body) {
+  public Function(String functionName, Parameter[] parameters, Type[] returnTypes, Node body, int line, int column) {
+    super(line, column);
+    
     this.functionName = functionName;
     this.returnTypes = returnTypes;
     this.parameters = parameters;

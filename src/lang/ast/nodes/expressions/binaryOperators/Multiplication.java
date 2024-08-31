@@ -5,8 +5,6 @@ package lang.ast.nodes.expressions.binaryOperators;
  * Esta classe representa uma expressão de Multiplicação.
  * Expression * Expression
  */
-import java.util.HashMap;
-
 import lang.ast.nodes.expressions.base.Expression;
 import lang.ast.nodes.expressions.binaryOperators.base.BinaryOperator;
 import lang.visitors.Visitor;

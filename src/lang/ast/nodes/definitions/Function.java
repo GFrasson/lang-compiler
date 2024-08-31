@@ -1,5 +1,6 @@
 package lang.ast.nodes.definitions;
 
+import lang.ast.nodes.Block;
 import lang.ast.nodes.Parameter;
 import lang.ast.nodes.base.Node;
 import lang.ast.nodes.definitions.base.Definition;
@@ -16,9 +17,9 @@ public class Function extends Definition {
   private String functionName;
   private Parameter[] parameters;
   private Type[] returnTypes;
-  private Node body;
+  private Block body;
 
-  public Function(String functionName, Parameter[] parameters, Type[] returnTypes, Node body, int line, int column) {
+  public Function(String functionName, Parameter[] parameters, Type[] returnTypes, Block body, int line, int column) {
     super(line, column);
     
     this.functionName = functionName;
@@ -39,7 +40,7 @@ public class Function extends Definition {
     return parameters;
   }
 
-  public Node getBody() {
+  public Block getBody() {
     return body;
   }
 

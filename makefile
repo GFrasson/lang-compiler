@@ -1,5 +1,5 @@
 SRC_DIR := src
-OUTPUT_DIR := target
+OUTPUT_DIR := bin
 LIB_DIR := lib
 
 JC := javac
@@ -27,8 +27,11 @@ default: generate-parser
 generate-parser:
 	java -jar $(LIB_DIR)/antlr-4.8-complete.jar $(SRC_DIR)/lang/parser/lang.g4
 
+run-tests:
+	java -cp .:$(LIB_DIR)/antlr-4.8-complete.jar:$(OUTPUT_DIR) LangCompiler -bs
+
 run:
-	java -cp .:$(LIB_DIR)/antlr-4.8-complete.jar:$(OUTPUT_DIR) LangCompiler $(FILE)
+	java -cp .:$(LIB_DIR)/antlr-4.8-complete.jar:$(OUTPUT_DIR) LangCompiler -byt $(FILE)
 
 clean:
 	rm -rf $(OUTPUT_DIR)/*

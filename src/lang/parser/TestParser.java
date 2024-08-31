@@ -9,7 +9,7 @@ import java.util.List;
 
 public class TestParser {
   private ParseAdaptor adp;
-  private String okSrcs = "testes/sintaxe/certo/";
+  private String okSrcs = "exemplos/testes/sintaxe/certo/";
   private File f;
 
   public TestParser(ParseAdaptor adp) {

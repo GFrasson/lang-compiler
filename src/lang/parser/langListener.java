@@ -76,6 +76,16 @@ public interface langListener extends ParseTreeListener {
 	 */
 	void exitFun(langParser.FunContext ctx);
 	/**
+	 * Enter a parse tree produced by {@link langParser#block}.
+	 * @param ctx the parse tree
+	 */
+	void enterBlock(langParser.BlockContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link langParser#block}.
+	 * @param ctx the parse tree
+	 */
+	void exitBlock(langParser.BlockContext ctx);
+	/**
 	 * Enter a parse tree produced by {@link langParser#params}.
 	 * @param ctx the parse tree
 	 */

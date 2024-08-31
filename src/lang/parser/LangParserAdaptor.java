@@ -1,13 +1,9 @@
 package lang.parser;
 
-import java.io.FileReader;
-
-import org.antlr.v4.runtime.CharStreams;
 import org.antlr.v4.runtime.*;
 import org.antlr.v4.runtime.tree.*;
 
-import lang.parser.langLexer;
-import lang.parser.langParser;
+import lang.parser.langParser.ProgContext;
 
 import lang.ast.SuperNode;
 
@@ -25,18 +21,21 @@ public class LangParserAdaptor implements ParseAdaptor {
       CommonTokenStream tokens = new CommonTokenStream(lex);
       // create a parser that feeds off the tokens buffer
       langParser parser = new langParser(tokens);
+      parser.setBuildParseTree(false);
 
-      ParseTree tree = parser.prog();
-      System.out.println(tree.toStringTree(parser));
-      
-      System.out.println(tokens.getTokens());
+      ProgContext tree = parser.prog();
+
+      System.out.println(tree.toStringTree(parser));      
       for (Token token : tokens.getTokens())
       {
-          System.out.println(token.getType());
+        System.out.println(token.getText() + " - " + token.getType());
       }
 
-      return (SuperNode) tree;
+      return (SuperNode) tree.ast;
     } catch (Exception e) {
+      System.out.println(e);
+      e.printStackTrace();
+
       return null;
     }
   }

@@ -22,26 +22,34 @@ public abstract class Visitor {
   public abstract void visit(Multiplication e);
   public abstract void visit(Division e);
   public abstract void visit(Modulus e);
-
+  
   public abstract void visit(And e);
   public abstract void visit(LessThan e);
   public abstract void visit(Equals e);
+  public abstract void visit(NotEquals e);
   public abstract void visit(Not e);
 
   public abstract void visit(True e);
   public abstract void visit(False e);
+  public abstract void visit(LiteralChar e);
   public abstract void visit(LiteralInt e);
   public abstract void visit(LiteralFloat e);
   public abstract void visit(Variable e);
   public abstract void visit(Call e);
+  public abstract void visit(Null e);
+  public abstract void visit(UnaryMinus e);
+  public abstract void visit(VariableDeclaration e);
 
   public abstract void visit(Assignment e);
+  public abstract void visit(Block e);
+  public abstract void visit(Declaration e);
   public abstract void visit(If e);
   public abstract void visit(Iterate e);
   public abstract void visit(Print e);
   public abstract void visit(Read e);
   public abstract void visit(StatementList e);
   public abstract void visit(Function f);
+  public abstract void visit(DataRegister d);
 
   public abstract void visit(Instance e);
   public abstract void visit(Return e);

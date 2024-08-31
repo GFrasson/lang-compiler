@@ -35,8 +35,6 @@ HashMap<String, Character> specialCharacters = new HashMap<String, Character>() 
   put("\\\\", '\\');
   put("\\'", '\'');
 }};
-
-int count = 0;
 }
 
 /* Regras da gramática */
@@ -48,9 +46,8 @@ prog returns [Program ast]
       Definition[] definitionsArray = new Definition[definitions.size()];
       definitionsArray = definitions.toArray(definitionsArray);
 
-      Definition definition = definitionsArray[0];
-      int line = definition != null ? definition.getLine() : 0;
-      int column = definition != null ? definition.getColumn() : 0;
+      int line = definitionsArray.length > 0 ? definitionsArray[0].getLine() : 0;
+      int column = definitionsArray.length > 0 ? definitionsArray[0].getColumn() : 0;
 
       $ast = new Program(definitionsArray, line, column);
     }
@@ -84,12 +81,28 @@ fun returns [Function ast]
     (
       COLON type1=type { returnTypes.add($type1.ast); }
       (COMMA type2=type { returnTypes.add($type2.ast); })*
-    )? OPEN_CURLY_BRACE cmd* CLOSE_CURLY_BRACE
+    )? block
     {
       Type[] typesArray = new Type[returnTypes.size()];
       typesArray = returnTypes.toArray(typesArray);
 
-      $ast = new Function($ID.text, $params.ast, typesArray, $cmd.ast, $ID.line, $ID.pos);
+      FunContext context = (FunContext)_localctx;
+      Parameter[] parameters = context.params != null ? $params.ast : new Parameter[0];
+
+      $ast = new Function($ID.text, parameters, typesArray, $block.ast, $ID.line, $ID.pos);
+    }
+  ;
+
+block returns [Block ast]
+  : OPEN_CURLY_BRACE
+    { List<Node> commands = new ArrayList<Node>(); }
+    (cmd { commands.add($cmd.ast); })*
+    CLOSE_CURLY_BRACE
+    {
+      Node[] commandsArray = new Node[commands.size()];
+      commandsArray = commands.toArray(commandsArray);
+
+      $ast = new Block(commandsArray, $OPEN_CURLY_BRACE.line, $OPEN_CURLY_BRACE.pos);
     }
   ;
 
@@ -107,7 +120,7 @@ params returns [Parameter[] ast]
   ;
 
 type returns [Type ast]
-  : type OPEN_BRACKET CLOSE_BRACKET   { $ast = new ArrayType($bType.ast, $OPEN_BRACKET.line, $OPEN_BRACKET.pos); }
+  : type1=type OPEN_BRACKET CLOSE_BRACKET   { $ast = new ArrayType($type1.ast, $OPEN_BRACKET.line, $OPEN_BRACKET.pos); }
   | bType                             { $ast = $bType.ast; }
   ;
 
@@ -120,16 +133,7 @@ bType returns [Type ast]
   ;
 
 cmd returns [Node ast]
-  : OPEN_CURLY_BRACE
-    { List<Node> commands = new ArrayList<Node>(); }
-    (cmd { commands.add($cmd.ast); })*
-    CLOSE_CURLY_BRACE
-    {
-      Node[] commandsArray = new Node[commands.size()];
-      commandsArray = commands.toArray(commandsArray);
-
-      $ast = new Block(commandsArray, $OPEN_CURLY_BRACE.line, $OPEN_CURLY_BRACE.pos);
-    }
+  : block     { $ast = $block.ast; }
   | IF OPEN_PARENTHESIS condition=exp CLOSE_PARENTHESIS then=cmd     { $ast = new If($condition.ast, $then.ast, $IF.line, $IF.pos); }
   | IF OPEN_PARENTHESIS condition=exp CLOSE_PARENTHESIS then=cmd ELSE elseCmd=cmd    { $ast = new If($exp.ast, $then.ast, $elseCmd.ast, $IF.line, $IF.pos); }
   | ITERATE OPEN_PARENTHESIS condition=exp CLOSE_PARENTHESIS body=cmd    { $ast = new Iterate($condition.ast, $body.ast, $ITERATE.line, $ITERATE.pos); }
@@ -158,7 +162,10 @@ cmd returns [Node ast]
       Variable[] variablesArray = new Variable[returnVariables.size()];
       variablesArray = returnVariables.toArray(variablesArray);
 
-      $ast = new Call($ID.text, $arguments.ast, variablesArray, $ID.line, $ID.pos);
+      CmdContext context = (CmdContext)_localctx;
+      Expression[] argumentsArray = context.arguments != null ? $arguments.ast : new Expression[0];
+
+      $ast = new Call($ID.text, argumentsArray, variablesArray, $ID.line, $ID.pos);
     }
   ;
 
@@ -193,8 +200,20 @@ exp returns [Expression ast]
         $ast = new LiteralChar(this.specialCharacters.get(value), $CHAR.line, $CHAR.pos);
       }
     }
-  | NEW type (OPEN_BRACKET exp CLOSE_BRACKET)?              { $ast = new VariableDeclaration($type.ast, $exp.ast, $NEW.line, $NEW.pos); }
-  | ID OPEN_PARENTHESIS (arguments=exps)? CLOSE_PARENTHESIS OPEN_BRACKET returnIndex=exp CLOSE_BRACKET    { $ast = new Call($ID.text, $arguments.ast, $returnIndex.ast, $ID.line, $ID.pos); }
+  | NEW type (OPEN_BRACKET exp CLOSE_BRACKET)?
+    {
+      ExpContext context = (ExpContext)_localctx;
+      Expression expression = context.exp != null ? $exp.ast : null;
+
+      $ast = new VariableDeclaration($type.ast, expression, $NEW.line, $NEW.pos);
+    }
+  | ID OPEN_PARENTHESIS (arguments=exps)? CLOSE_PARENTHESIS OPEN_BRACKET returnIndex=exp CLOSE_BRACKET
+    {
+      ExpContext context = (ExpContext)_localctx;
+      Expression[] argumentsArray = context.arguments != null ? $arguments.ast : new Expression[0];
+
+      $ast = new Call($ID.text, argumentsArray, $returnIndex.ast, $ID.line, $ID.pos);
+    }
   ;
 
 lvalue returns [Variable ast]
@@ -263,5 +282,5 @@ NOT: '!';
 
 NEWLINE: '\r'? '\n' -> skip;
 WHITESPACE: [ \t\f]+ -> skip;
-LINE_COMMENT: '-' '-' ~('\r' | '\n' | [\r\n])* NEWLINE;
+LINE_COMMENT: '-' '-' ~('\r' | '\n' | [\r\n])* NEWLINE -> skip;
 COMMENT: '{-' .*? '-}' -> skip;

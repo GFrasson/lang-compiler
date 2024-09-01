@@ -1,6 +1,18 @@
+/*
+* Equipe:
+* ÁGATA MEIRELES CARVALHO - 202065001C
+* GABRIEL FRASSON COSTA - 202035001
+*/
+
 grammar lang;
 
 @parser::header {
+/*
+* Equipe:
+* ÁGATA MEIRELES CARVALHO - 202065001C
+* GABRIEL FRASSON COSTA - 202035001
+*/
+
 package lang.parser;
 
 import lang.ast.*;
@@ -21,6 +33,12 @@ import java.util.HashMap;
 }
 
 @lexer::header {
+/*
+* Equipe:
+* ÁGATA MEIRELES CARVALHO - 202065001C
+* GABRIEL FRASSON COSTA - 202035001
+*/
+
 package lang.parser;
 
 import java.util.HashMap;

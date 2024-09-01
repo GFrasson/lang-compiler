@@ -1,5 +1,11 @@
 // Generated from /home/gfrasson/projects/ufjf/08periodo/compiladores/lang-compiler/src/lang/parser/lang.g4 by ANTLR 4.13.1
 
+/*
+* Equipe:
+* ÁGATA MEIRELES CARVALHO - 202065001C
+* GABRIEL FRASSON COSTA - 202035001
+*/
+
 package lang.parser;
 
 import java.util.HashMap;

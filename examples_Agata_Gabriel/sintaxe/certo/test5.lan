@@ -1,0 +1,23 @@
+data Ponto {
+  x :: Int;
+  y :: Int;
+}
+
+somaEMultiplica(x :: Int, y :: Int): Int, Int {
+  return x + y, x * y;
+}
+
+main() {
+  ponto = new Ponto;
+  
+  ponto.x = somaEMultiplica(2, 3)[0];
+  ponto.y = somaEMultiplica(2, 3)[1];
+  
+  array = new Int[3];
+  array[0] = somaEMultiplica(2, 3)[0];
+  array[1] = somaEMultiplica(2, 3)[1];
+
+  print ponto;
+  print '\n';
+  print array;
+}

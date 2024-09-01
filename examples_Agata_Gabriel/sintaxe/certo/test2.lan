@@ -1,0 +1,17 @@
+data Ponto {
+  x :: Int;
+  y :: Int;
+}
+
+main() {
+  ponto = new Ponto;
+  read ponto.x;
+  read ponto.y;
+
+  array = new Int[3];
+  read array[1];
+
+  print ponto;
+  print '\n';
+  print array;
+}

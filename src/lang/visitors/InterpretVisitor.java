@@ -14,6 +14,7 @@ import lang.ast.nodes.types.*;
 
 import java.util.HashMap;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Stack;
 import java.util.Scanner;
 
@@ -24,6 +25,7 @@ public class InterpretVisitor extends Visitor {
   private HashMap<String, DataRegister> dataRegisters;
   private Stack<Object> operands;
   private boolean returnMode, debugMode;
+  private Scanner keyboard;
 
   public InterpretVisitor() {
     environment = new Stack<HashMap<String, Object>>();
@@ -31,6 +33,7 @@ public class InterpretVisitor extends Visitor {
     functions = new HashMap<String, Function>();
     dataRegisters = new HashMap<String, DataRegister>();
     operands = new Stack<Object>();
+    keyboard = new Scanner(System.in);
     returnMode = false;
     debugMode = false;
   }
@@ -62,6 +65,7 @@ public class InterpretVisitor extends Visitor {
       throw new RuntimeException("Não há uma função chamada main ! abortando ! ");
     }
     main.accept(this);
+    keyboard.close();
   }
 
   public void visit(Add add) {
@@ -463,10 +467,39 @@ public class InterpretVisitor extends Visitor {
   }
 
   public void visit(Read read) {
-    // Scanner keyboard = new Scanner(System.in);
-    // int coins = keyboard.next
-    // keyboard.close();
+    String text = keyboard.next();
 
+    ArrayList<java.util.function.Function<String, Object>> parseFunctions = new ArrayList<>(
+      Arrays.asList(
+        (String input) -> { return Integer.parseInt(input); },
+        (String input) -> { return Float.parseFloat(input); },
+        (String input) -> { return input.toCharArray()[0]; }
+      )
+    );
+
+    try {
+      for (java.util.function.Function<String, Object> parseFunction : parseFunctions) {
+        Object result = this.parseInput(text, parseFunction);
+        if (result != null) {
+          this.assignment(read.getVariable(), result);
+          return;
+        }
+      }
+    } catch (Exception e) {
+      throw new RuntimeException(" (" + read.getLine() + ", " + read.getColumn() + ") Invalid input.");
+    }
+
+    throw new RuntimeException(" (" + read.getLine() + ", " + read.getColumn() + ") Invalid input");
+  }
+
+  private Object parseInput(String input, java.util.function.Function<String, Object> parseFunction) {
+    try {
+      return parseFunction.apply(input);
+    } catch (NumberFormatException e) {
+      return null;
+    } catch (Exception e) {
+      throw e;
+    }
   }
 
   public void visit(Block block) {

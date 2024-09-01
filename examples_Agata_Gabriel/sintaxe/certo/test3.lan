@@ -1,0 +1,28 @@
+data Ponto {
+  x :: Int;
+  y :: Int;
+}
+
+data Conjunto {
+  pontos :: Ponto[];
+}
+
+main() {
+  conjuntos = new Conjunto[3];
+  conjuntos[0] = new Conjunto;
+  conjuntos[1] = new Conjunto;
+  
+  conjuntos[0].pontos = new Ponto[4];
+  conjuntos[1].pontos = new Ponto[4];
+
+  conjuntos[0].pontos[0] = new Ponto;
+  read conjuntos[0].pontos[0].x;
+  read conjuntos[0].pontos[0].y;
+
+  conjuntos[1].pontos[1] = new Ponto;
+  read conjuntos[1].pontos[1].x;
+  read conjuntos[1].pontos[1].y;
+
+
+  print conjuntos;
+}

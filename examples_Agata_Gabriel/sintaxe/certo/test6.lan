@@ -1,0 +1,26 @@
+data Ponto {
+  x :: Int;
+  y :: Int;
+}
+
+criaPontos(): Ponto[] {
+  size = 3;
+  pontos = new Pontos[size];
+  i = 0;
+  iterate (size) {
+    pontos[i] = new Ponto;
+    pontos[i].x = i;
+    pontos[i].y = i;
+
+    i = i + 1;
+  }
+
+  return pontos;
+}
+
+main() {
+  pontos = criaPontos()[0];
+  pontos[0].x = 10;
+
+  print pontos;
+}

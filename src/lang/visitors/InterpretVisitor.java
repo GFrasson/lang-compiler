@@ -230,8 +230,6 @@ public class InterpretVisitor extends Visitor {
 
   public void visit(Call call) {
     try {
-      System.out.println("call " + call.getFunctionName());
-
       Function function = functions.get(call.getFunctionName());
       if (function == null) {
         throw new RuntimeException(
@@ -452,7 +450,7 @@ public class InterpretVisitor extends Visitor {
     try {
       print.getExpression().accept(this);
       Object object = operands.pop();
-      System.out.println(object != null ? object.toString() : null);
+      System.out.print(object != null ? object.toString() : null);
     } catch (Exception x) {
       throw new RuntimeException(" (" + print.getLine() + ", " + print.getColumn() + ") " + x.getMessage());
     }
@@ -545,8 +543,6 @@ public class InterpretVisitor extends Visitor {
     }
 
     operands.push(returnValues);
-    System.out.println(operands);
-
     returnMode = true;
   }
 

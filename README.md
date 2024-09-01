@@ -43,3 +43,27 @@ java -cp target App ./examples_Agata_Gabriel/right/exampleCHAR.lan
 Ágata Meireles Carvalho
 
 Gabriel Frasson Costa
+
+# Analisador Sintático
+
+## Versão do JAVA
+**11.0.22**
+
+## Compilação
+Execute o comando na raiz da aplicação
+```bash
+make
+```
+
+## Execução - Testes sintáticos
+Execute o comando na raiz da aplicação.
+```bash
+make run-tests
+```
+
+## Execução - Interpretador
+Execute o comando na raiz da aplicação.
+```bash
+make run-interpreter FILE=./exemplos/testes/sintaxe/certo/attrADD.lan
+```
+ - OBS: Substitua o caminho do arquivo para testar outros exemplos

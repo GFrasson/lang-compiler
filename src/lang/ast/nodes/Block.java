@@ -1,7 +1,6 @@
 package lang.ast.nodes;
 
 import lang.ast.nodes.base.Node;
-import lang.ast.nodes.expressions.base.Expression;
 
 /*
  * Esta classe representa um bloco de comandos.

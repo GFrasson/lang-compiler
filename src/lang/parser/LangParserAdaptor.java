@@ -1,7 +1,6 @@
 package lang.parser;
 
 import org.antlr.v4.runtime.*;
-import org.antlr.v4.runtime.tree.*;
 
 import lang.parser.langParser.ProgContext;
 
@@ -28,15 +27,6 @@ public class LangParserAdaptor implements ParseAdaptor {
       if (parser.getNumberOfSyntaxErrors() > 0) {
         return null;
       }
-
-      // System.out.println(tree.toStringTree(parser));      
-      // for (Token token : tokens.getTokens())
-      // {
-      //   if (token.getType() > 0)
-      //     System.out.println(token.getText() + " - " + langLexer.ruleNames[token.getType() - 1]);
-      //   else
-      //     System.out.println(token.getText() + " - " + token.getType());
-      // }
 
       return (SuperNode) tree.ast;
     } catch (Exception e) {

@@ -5,8 +5,6 @@ package lang.ast.nodes;
  * ?(E) {C} : {C} 
  */
 
-import java.util.HashMap;
-
 import lang.ast.nodes.base.Node;
 import lang.ast.nodes.expressions.base.Expression;
 import lang.visitors.Visitor;

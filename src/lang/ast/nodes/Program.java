@@ -1,7 +1,6 @@
 package lang.ast.nodes;
 
 import lang.ast.nodes.base.Node;
-import lang.ast.nodes.definitions.Function;
 import lang.ast.nodes.definitions.base.Definition;
 
 /*

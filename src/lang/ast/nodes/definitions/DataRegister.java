@@ -1,9 +1,7 @@
 package lang.ast.nodes.definitions;
 
 import lang.ast.nodes.Declaration;
-import lang.ast.nodes.base.Node;
 import lang.ast.nodes.definitions.base.Definition;
-import lang.ast.nodes.types.base.Type;
 
 /*
  * Esta classe representa um registro data.

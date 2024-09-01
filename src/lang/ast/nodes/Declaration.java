@@ -3,8 +3,6 @@ package lang.ast.nodes;
 import lang.ast.nodes.base.Node;
 import lang.ast.nodes.types.base.Type;
 
-import java.util.Arrays;
-
 /*
  * Esta classe representa uma declaração do registro.
  * id :: Type;

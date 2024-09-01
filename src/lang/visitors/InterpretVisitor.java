@@ -242,6 +242,12 @@ public class InterpretVisitor extends Visitor {
 
       function.accept(this);
 
+      if (!returnMode) {
+        return;
+      }
+      
+      returnMode = false;
+
       @SuppressWarnings("unchecked")
       ArrayList<Object> returnValues = (ArrayList<Object>)operands.pop();
 
@@ -498,7 +504,6 @@ public class InterpretVisitor extends Visitor {
     }
     
     environment.pop();
-    returnMode = false;
   }
 
   public void visit(Instance instance) {

@@ -30,9 +30,6 @@ public class LangParserAdaptor implements ParseAdaptor {
 
       return (SuperNode) tree.ast;
     } catch (Exception e) {
-      System.out.println(e);
-      e.printStackTrace();
-
       return null;
     }
   }

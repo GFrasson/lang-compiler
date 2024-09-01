@@ -46,6 +46,8 @@ Gabriel Frasson Costa
 
 # Analisador Sintático
 
+O analisador sintático foi construído utilizando a ferramenta ANTLR. Como o ANTLR não integra com o JFLEX, o analisador léxico foi reconstruído na ferramenta, juntamente com o analisador sintático.
+
 ## Versão do JAVA
 **11.0.22**
 

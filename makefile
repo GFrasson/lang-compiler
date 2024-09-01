@@ -33,8 +33,5 @@ run-tests:
 run-interpreter:
 	java -cp .:$(LIB_DIR)/antlr-4.8-complete.jar:$(OUTPUT_DIR) LangCompiler -i $(FILE)
 
-run:
-	java -cp .:$(LIB_DIR)/antlr-4.8-complete.jar:$(OUTPUT_DIR) LangCompiler -byt $(FILE)
-
 clean:
 	rm -rf $(OUTPUT_DIR)/*

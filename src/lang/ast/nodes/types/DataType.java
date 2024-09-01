@@ -25,7 +25,7 @@ public class DataType extends Type {
   }
 
   public String toString() {
-    return "Float";
+    return "Data";
   }
 
   public void accept(Visitor visitor) {

@@ -7,9 +7,11 @@
 import java.io.IOException;
 
 import lang.ast.SuperNode;
+import lang.ast.nodes.Program;
 import lang.parser.LangParserAdaptor;
 import lang.parser.ParseAdaptor;
 import lang.parser.TestParser;
+import lang.visitors.InterpretVisitor;
 
 public class LangCompiler {
   public static void main(String args[]) throws IOException {
@@ -49,9 +51,12 @@ public class LangCompiler {
         System.err.println("Aborting due to syntax error(s)");
         System.exit(1);
       } else if (args[0].equals("-i")) {
-        // iv = new InterpreterVisitor();
-        // result.accept(iv);
-        // ((InterpreterVisitor)iv).printEnv();
+        InterpretVisitor interpretVisitor = new InterpretVisitor();
+        
+        Program program = (Program)result;
+        program.accept(interpretVisitor);
+
+        // ((InterpretVisitor)interpretVisitor).printEnv();
       } else if (args[0].equals("-ii")) {
         // iv = new InteractiveInterpreterVisitor();
         // result.accept(iv);

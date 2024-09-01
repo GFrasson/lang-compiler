@@ -1,7 +1,7 @@
 package lang.ast.nodes;
 
 import lang.ast.nodes.base.Node;
-import lang.ast.nodes.expressions.base.Expression;
+import lang.ast.nodes.expressions.variables.base.Variable;
 /*
  * Esta classe representa um comando de leitura.
  * read Expr
@@ -9,21 +9,21 @@ import lang.ast.nodes.expressions.base.Expression;
 import lang.visitors.Visitor;
 
 public class Read extends Node {
-  private Expression expression;
+  private Variable variable;
 
-  public Read(Expression expression, int line, int column) {
+  public Read(Variable variable, int line, int column) {
     super(line, column);
     
-    this.expression = expression;
+    this.variable = variable;
   }
 
-  public Expression getExpression() {
-    return expression;
+  public Variable getVariable() {
+    return variable;
   }
 
   // @Override
   public String toString() {
-    return "read " + expression.toString() + ";";
+    return "read " + variable.toString() + ";";
   }
 
   public void accept(Visitor visitor) {

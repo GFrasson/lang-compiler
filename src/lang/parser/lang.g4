@@ -196,7 +196,7 @@ exp returns [Expression ast]
 
       if (value.length() == 1) {
         $ast = new LiteralChar(value.toCharArray()[0], $CHAR.line, $CHAR.pos);
-      } else if (this.specialCharacters.containsKey(value)) {
+      } else if (this.specialCharacters.containsKey(value)) {        
         $ast = new LiteralChar(this.specialCharacters.get(value), $CHAR.line, $CHAR.pos);
       }
     }
@@ -205,7 +205,7 @@ exp returns [Expression ast]
       ExpContext context = (ExpContext)_localctx;
       Expression expression = context.exp != null ? $exp.ast : null;
 
-      $ast = new VariableDeclaration($type.ast, expression, $NEW.line, $NEW.pos);
+      $ast = new Instance($type.ast, expression, $NEW.line, $NEW.pos);
     }
   | ID OPEN_PARENTHESIS (arguments=exps)? CLOSE_PARENTHESIS OPEN_BRACKET returnIndex=exp CLOSE_BRACKET
     {
@@ -282,5 +282,8 @@ NOT: '!';
 
 NEWLINE: '\r'? '\n' -> skip;
 WHITESPACE: [ \t\f]+ -> skip;
-LINE_COMMENT: '-' '-' ~('\r' | '\n' | [\r\n])* NEWLINE -> skip;
+LINE_COMMENT: '--' ~('\r' | '\n' | [\r\n])* NEWLINE -> skip;
 COMMENT: '{-' .*? '-}' -> skip;
+// UNTERMINATED_COMMENT: '{-' .*? EOF {
+//     throw new RuntimeException("Unterminated comment detected at line " + getLine() + ", position " + getCharPositionInLine());
+// };

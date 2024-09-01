@@ -22,7 +22,7 @@ public class Iterate extends Node {
   }
 
   public String toString() {
-    String s = "[" + condition.toString() + "]{" + body.toString() + "}";
+    String s = "iterate(" + condition.toString() + ") {" + body.toString() + "}";
     return s.replace('\n', '\0');
   }
 

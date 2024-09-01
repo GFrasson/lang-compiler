@@ -25,11 +25,18 @@ public class LangParserAdaptor implements ParseAdaptor {
 
       ProgContext tree = parser.prog();
 
-      System.out.println(tree.toStringTree(parser));      
-      for (Token token : tokens.getTokens())
-      {
-        System.out.println(token.getText() + " - " + token.getType());
+      if (parser.getNumberOfSyntaxErrors() > 0) {
+        return null;
       }
+
+      // System.out.println(tree.toStringTree(parser));      
+      // for (Token token : tokens.getTokens())
+      // {
+      //   if (token.getType() > 0)
+      //     System.out.println(token.getText() + " - " + langLexer.ruleNames[token.getType() - 1]);
+      //   else
+      //     System.out.println(token.getText() + " - " + token.getType());
+      // }
 
       return (SuperNode) tree.ast;
     } catch (Exception e) {

@@ -17,7 +17,7 @@ public class CharType extends Type {
   }
 
   public String toString() {
-    return "Float";
+    return "Char";
   }
 
   public void accept(Visitor visitor) {

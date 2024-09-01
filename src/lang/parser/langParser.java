@@ -1333,7 +1333,7 @@ public class langParser extends Parser {
 
 				      if (value.length() == 1) {
 				        ((ExpContext)_localctx).ast =  new LiteralChar(value.toCharArray()[0], (((ExpContext)_localctx).CHAR!=null?((ExpContext)_localctx).CHAR.getLine():0), (((ExpContext)_localctx).CHAR!=null?((ExpContext)_localctx).CHAR.getCharPositionInLine():0));
-				      } else if (this.specialCharacters.containsKey(value)) {
+				      } else if (this.specialCharacters.containsKey(value)) {        
 				        ((ExpContext)_localctx).ast =  new LiteralChar(this.specialCharacters.get(value), (((ExpContext)_localctx).CHAR!=null?((ExpContext)_localctx).CHAR.getLine():0), (((ExpContext)_localctx).CHAR!=null?((ExpContext)_localctx).CHAR.getCharPositionInLine():0));
 				      }
 				    
@@ -1363,7 +1363,7 @@ public class langParser extends Parser {
 				      ExpContext context = (ExpContext)_localctx;
 				      Expression expression = context.exp != null ? ((ExpContext)_localctx).exp.ast : null;
 
-				      ((ExpContext)_localctx).ast =  new VariableDeclaration(((ExpContext)_localctx).type.ast, expression, (((ExpContext)_localctx).NEW!=null?((ExpContext)_localctx).NEW.getLine():0), (((ExpContext)_localctx).NEW!=null?((ExpContext)_localctx).NEW.getCharPositionInLine():0));
+				      ((ExpContext)_localctx).ast =  new Instance(((ExpContext)_localctx).type.ast, expression, (((ExpContext)_localctx).NEW!=null?((ExpContext)_localctx).NEW.getLine():0), (((ExpContext)_localctx).NEW!=null?((ExpContext)_localctx).NEW.getCharPositionInLine():0));
 				    
 				}
 				break;

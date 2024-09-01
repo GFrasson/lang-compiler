@@ -2,7 +2,6 @@ package lang.ast.nodes.definitions;
 
 import lang.ast.nodes.Block;
 import lang.ast.nodes.Parameter;
-import lang.ast.nodes.base.Node;
 import lang.ast.nodes.definitions.base.Definition;
 import lang.ast.nodes.types.base.Type;
 

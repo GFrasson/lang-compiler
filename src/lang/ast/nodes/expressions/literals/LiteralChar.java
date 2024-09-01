@@ -16,7 +16,7 @@ public class LiteralChar extends Expression {
     this.value = value;
   }
 
-  public float getValue() {
+  public char getValue() {
     return value;
   }
 

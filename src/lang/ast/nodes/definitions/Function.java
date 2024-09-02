@@ -1,3 +1,9 @@
+/*
+* Equipe:
+* ÁGATA MEIRELES CARVALHO - 202065001C
+* GABRIEL FRASSON COSTA - 202035001
+*/
+
 package lang.ast.nodes.definitions;
 
 import lang.ast.nodes.Block;

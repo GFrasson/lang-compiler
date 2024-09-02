@@ -1,4 +1,4 @@
-# COMPILADOR
+# TEORIA DIS COMPILADORES
 
 Ao longo do semestre da disciplina Teoria de Compiladores (DCC045) será construído um compilador para a linguagem lang. Assim, neste projeto foi desenvolvido um analisador léxico, sintático e interpretador.
 Assim como geração de AST (Árvore Sintática Abstrata).

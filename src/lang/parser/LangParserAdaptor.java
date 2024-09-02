@@ -1,3 +1,9 @@
+/*
+* Equipe:
+* ÁGATA MEIRELES CARVALHO - 202065001C
+* GABRIEL FRASSON COSTA - 202035001
+*/
+
 package lang.parser;
 
 import org.antlr.v4.runtime.*;

@@ -1,7 +1,7 @@
-# Analisador Léxico
+# TEORIA DIS COMPILADORES
 
-Ao longo do semestre da disciplina Teoria de Compiladores (DCC045) será construído um compilador para a linguagem lang. Assim, neste primeiro trabalho foi desenvolvido um analisador léxico.
-Implementamos um programa de teste que usa o analisador léxico implementado. Tal programa recebe como entrada um arquivo contendo um programa na linguagem e imprime, na saída padrão, a sequência de tokens produzido pelo analisador léxico, um token por linha.
+Ao longo do semestre da disciplina Teoria de Compiladores (DCC045) será construído um compilador para a linguagem lang. Assim, neste projeto foi desenvolvido um analisador léxico, sintático e interpretador.
+Assim como geração de AST (Árvore Sintática Abstrata).
 
 ## 📄 Linguagem
 

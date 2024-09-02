@@ -1,0 +1,17 @@
+
+f(x :: Int){
+   y = 2*x + 1;
+   print y;
+   print '\n';
+}
+
+f(x :: Int, z :: Int){
+   y = 2*x + z;
+   print y;
+   print '\n';
+}
+
+main(){
+  f(1, 2);
+  f(1);
+}

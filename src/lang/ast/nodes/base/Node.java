@@ -3,7 +3,7 @@ package lang.ast.nodes.base;
 import lang.ast.SuperNode;
 import lang.visitors.Visitable;
 
-public abstract class Node implements Visitable, SuperNode {
+public abstract class Node extends SuperNode implements Visitable {
   private int line;
   private int column;
 

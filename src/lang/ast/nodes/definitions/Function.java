@@ -43,6 +43,18 @@ public class Function extends Definition {
     return body;
   }
 
+  public String getSignature() {
+    String functionSignature = this.getID();
+
+    // for (Parameter parameter : this.getParameters()) {
+    //   functionSignature += parameter.getType().toString();
+    // }
+
+    functionSignature += this.parameters.length;
+
+    return functionSignature;
+  }
+
   public String toString() {
     String functionToString = functionName.toString() + "(";
     if (parameters.length > 0) {

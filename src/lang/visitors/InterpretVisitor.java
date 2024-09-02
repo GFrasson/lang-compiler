@@ -50,7 +50,7 @@ public class InterpretVisitor extends Visitor {
       if (definition instanceof Function) {
         Function function = (Function) definition;
 
-        functions.put(function.getID(), function);
+        functions.put(function.getSignature(), function);
         if (function.getID().equals("main")) {
           main = function;
         }
@@ -234,7 +234,8 @@ public class InterpretVisitor extends Visitor {
 
   public void visit(Call call) {
     try {
-      Function function = functions.get(call.getFunctionName());
+      String functionSignature = call.getFunctionName() + call.getArguments().length;
+      Function function = functions.get(functionSignature);
       if (function == null) {
         throw new RuntimeException(
             " (" + call.getLine() + ", " + call.getColumn() + ") Função não definida " + call.getFunctionName());

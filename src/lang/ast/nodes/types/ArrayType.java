@@ -28,6 +28,10 @@ public class ArrayType extends Type {
     return false;
   }
 
+  public String toString() {
+    return this.argumentType.toString() + "[]";
+  }
+
   public void accept(Visitor visitor) {
     visitor.visit(this);
   }

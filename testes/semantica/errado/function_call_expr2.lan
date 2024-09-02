@@ -1,0 +1,11 @@
+
+f(x :: Int) : Int, Int{
+   y = 2*x  + 1;
+   return y, 1;
+}
+
+main(){
+  z = 10;
+  h = 2*f(z)[0] + f(z)[1];
+  print f(z)[h];
+}

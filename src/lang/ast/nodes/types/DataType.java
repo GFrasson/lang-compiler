@@ -25,7 +25,7 @@ public class DataType extends Type {
   }
 
   public String toString() {
-    return "Data";
+    return this.typeName;
   }
 
   public void accept(Visitor visitor) {

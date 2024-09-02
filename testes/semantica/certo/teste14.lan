@@ -1,0 +1,23 @@
+
+main() {
+  -- read x;
+  -- read y;
+  -- read z;
+  x = 1; y = 2; z = 3;
+  maior = x;
+  if(x < y) {
+    if(y < z) {
+      maior = z;
+    } else {
+      maior = y;
+    }
+  } else {
+    if(x < z) {
+      maior = z;
+    } else {
+      maior = x;
+    }
+  }
+  print 'M'; print 'a'; print 'i'; print 'o'; print 'r'; print ':'; print ' ';
+  print maior; print '\n';
+}

@@ -22,6 +22,7 @@ default: generate-parser
 	$(SRC_DIR)/lang/ast/nodes/types/*.java \
 	$(SRC_DIR)/lang/ast/nodes/types/base/*.java \
 	$(SRC_DIR)/lang/visitors/*.java \
+	$(SRC_DIR)/lang/utils/*.java \
 	-d $(OUTPUT_DIR)
 
 generate-parser:
@@ -32,6 +33,9 @@ run-tests:
 
 run-interpreter:
 	java -cp .:$(LIB_DIR)/antlr-4.8-complete.jar:$(OUTPUT_DIR) LangCompiler -i $(FILE)
+
+run-semantic:
+	java -cp .:$(LIB_DIR)/antlr-4.8-complete.jar:$(OUTPUT_DIR) LangCompiler -tp $(FILE)
 
 clean:
 	rm -rf $(OUTPUT_DIR)/*

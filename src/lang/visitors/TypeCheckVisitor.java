@@ -19,6 +19,7 @@ import lang.utils.*;
 import java.util.Stack;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 
 
@@ -86,8 +87,16 @@ public class TypeCheckVisitor extends Visitor {
       } else if (definition instanceof DataRegister) {
         DataRegister dataRegister = (DataRegister) definition;
 
-        // dataRegisters.put(dataRegister.getTypeName(), dataRegister);
+        HashMap<String, SType> declarations = new HashMap<>();
 
+        for (Declaration declaration : dataRegister.getDeclarations()) {
+          declaration.getType().accept(this);
+          declarations.put(declaration.getName(), stack.pop());
+        }
+
+        STyDataRegister dataRegisterType = new STyDataRegister(dataRegister.getTypeName(), declarations);
+
+        env.set(dataRegister.getTypeName(), new LocalEnv<SType>(dataRegister.getTypeName(), dataRegisterType));
         dataRegisters.add(dataRegister);
       }
     }
@@ -319,23 +328,108 @@ public class TypeCheckVisitor extends Visitor {
       k++;
     }
 
+    if (!returnCheck) {
+      return;
+    }
+
+    returnCheck = false;
+
+    SType[] returnValues = new SType[typeFunction.getReturnTypes().length];
+
+    for (int i = typeFunction.getReturnTypes().length - 1; i >= 0; i--) {
+      returnValues[i] = stack.pop();
+    }
+
+    if (call.getReturnIndex() != null) {
+      call.getReturnIndex().accept(this);
+      SType returnIndexType = stack.pop();
+
+      if (!returnIndexType.match(typeInt)) {
+        logError.add(call.getLine() + ", " + call.getColumn() + ": " + (k + 1)
+            + "\u00BA índice de acesso ao retorno precisa ser do tipo Int");
+        stack.push(typeError);
+        return;
+      }
+
+      
+      
+      // Object returnValue = returnValues[returnIndex];
+      // operands.push(returnValue);
+    }
+
+    Variable[] variables = call.getVariables();
+    if (variables != null && variables.length > 0) {
+      for (int i = 0; i < variables.length; i++) {
+        if (i > returnValues.length - 1) {
+          logError.add(call.getLine() + ", " + call.getColumn() + ": " + (k + 1)
+              + "\u00BA Muitos valores para descompactar");
+        }
+
+        this.assignment(variables[i], returnValues[i]);
+      }
+    }  
+
     for (SType returnType : typeFunction.getReturnTypes()) {
       stack.push(returnType);
     }
   }
 
-  public void visit(Assignment e) {
-
-    if (temp.get(e.getID().getName()) == null && (e.getID().getIdx() == null || e.getID().getIdx().length == 0)) {
-      e.getExp().accept(this);
-      temp.set(e.getID().getName(), stack.pop());
+  public void visit(Assignment assignmentExpression) {
+    if (temp.get(assignmentExpression.getID().getName()) == null && (assignmentExpression.getID().getIdx() == null || assignmentExpression.getID().getIdx().length == 0)) {
+      assignmentExpression.getExp().accept(this);
+      temp.set(assignmentExpression.getID().getName(), stack.pop());
     } else {
-      e.getID().accept(this);
-      e.getExp().accept(this);
+      assignmentExpression.getID().accept(this);
+      assignmentExpression.getExp().accept(this);
       if (!stack.pop().match(stack.pop())) {
-        logError.add(e.getLine() + ", " + e.getColumn() + ": Atribuição ilegal para a variável " + e.getID());
+        logError.add(assignmentExpression.getLine() + ", " + assignmentExpression.getColumn() + ": Atribuição ilegal para a variável " + assignmentExpression.getID());
       }
     }
+  }
+
+  private void assignment(SimpleVariable simpleVariable, SType expressionType) {
+    if (!temp.elem(simpleVariable.getName())) {
+      temp.set(simpleVariable.getName(), expressionType);
+      return;
+    }
+
+    SType variableType = temp.get(simpleVariable.getName());
+
+    if (!variableType.match(expressionType)) {
+      logError.add(simpleVariable.getLine() + ", " + simpleVariable.getColumn() + ": Atribuição ilegal para a variável " + simpleVariable.getName());
+    }
+  }
+
+  private void assignment(ArrayAccess arrayAccess, SType expressionType) {
+    arrayAccess.getArray().accept(this);
+    arrayAccess.getIndex().accept(this);
+    
+    SType indexType = stack.pop();
+    if (!indexType.match(typeInt)) {
+      logError.add(arrayAccess.getLine() + ", " + arrayAccess.getColumn() + ": Índice de acesso a um vetor deve ser do tipo Int ");
+    }
+
+    SType arrayType = stack.pop();
+
+    if (!arrayType.match(expressionType)) {
+      logError.add(arrayAccess.getLine() + ", " + arrayAccess.getColumn() + ": Tentativa de acesso de posição de vetor em uma variável do tipo " + expressionType.toString());
+    }
+
+
+    // array.set(index, expressionValue); 
+  }
+
+  private void assignment(FieldAccess variable, Object expressionValue) {
+    FieldAccess fieldAccess = (FieldAccess)variable;
+
+    fieldAccess.getObject().accept(this);
+    
+    @SuppressWarnings("unchecked")
+    HashMap<String, Object> dataRegister = (HashMap<String, Object>)operands.pop();
+    
+    String field = fieldAccess.getField();
+
+    dataRegister.put(field, expressionValue);
   }
 
   public void visit(If ifExpression) {
@@ -444,20 +538,14 @@ public class TypeCheckVisitor extends Visitor {
       expression.accept(this);
       SType expressionType = stack.pop();
       
-      if (!expressionType.match(returnType)) {
+      if (expressionType.match(returnType)) {
+        stack.push(expressionType);
+      } else {
         logError.add(returnExpression.getLine() + ", " + returnExpression.getColumn() + "Retorno de tipo " 
         + expressionType.toString() + ", na posição " + i + " é incompatível com o tipo de retorno " + returnType.toString() + " da função.");
+        
+        stack.push(typeError);
       }
-    }
-
-    
-    returnExpression.getExpr().accept(this);
-    
-    if (temp.getFunctionType() instanceof STyFun) {
-      SType[] t = ((STyFun) temp.getFunctionType()).getParameterTypes();
-      t[t.length - 1].match(stack.pop());
-    } else {
-      stack.pop().match(temp.getFunctionType());
     }
 
     returnCheck = true;
@@ -482,8 +570,8 @@ public class TypeCheckVisitor extends Visitor {
     stack.push(typeChar);
   }
 
-  public void visit(ArrayType t) {
-    t.getTyArg().accept(this);
+  public void visit(ArrayType arrayType) {
+    arrayType.getArgumentType().accept(this);
     stack.push(new STyArr(stack.pop()));
   }
 

@@ -4,9 +4,11 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class STyDataRegister extends SType {
+  private String name;
   private HashMap<String, SType> declarations;
 
-  public STyDataRegister(HashMap<String, SType> declarations) {
+  public STyDataRegister(String name, HashMap<String, SType> declarations) {
+    this.name = name;
     this.declarations = declarations;
   }
 
@@ -15,17 +17,21 @@ public class STyDataRegister extends SType {
   }
 
   public boolean match(SType value) {
-    boolean result = false;
-    if (value instanceof STyDataRegister) {
-      // if (((STyDataRegister) value).getParameterTypes().length == types.length) {
-      //   result = true;
-      //   for (int i = 0; i < types.length; i++) {
-      //     result = result && types[i].match(((STyDataRegister) value).getParameterTypes()[i]);
-      //   }
-      // }
+    if (value instanceof STyErr) {
+      return true;
+    }
+    
+    if (!(value instanceof STyDataRegister)) {
+      return false;
     }
 
-    return result;
+    STyDataRegister dataRegisterValue = (STyDataRegister) value;
+
+    if (dataRegisterValue.name.equals(this.name)) {
+      return true;
+    }
+
+    return false;
   }
 
   public String toString() {

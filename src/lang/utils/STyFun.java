@@ -18,6 +18,10 @@ public class STyFun extends SType {
   }
 
   public boolean match(SType value) {
+    if (value instanceof STyErr) {
+      return true;
+    }
+
     if (!(value instanceof STyFun)) {
       return false;
     }

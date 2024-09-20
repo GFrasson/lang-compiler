@@ -59,12 +59,23 @@ public class TypeCheckVisitor extends Visitor {
     ArrayList<Function> functions = new ArrayList<>();
     ArrayList<DataRegister> dataRegisters = new ArrayList<>();
 
+    boolean hasMainFunction = false;
+
     for (Definition definition : program.getDefinitions()) {
       if (definition instanceof Function) {
         Function function = (Function) definition;
 
         Parameter[] parameters = function.getParameters();
         Type[] returns = function.getReturnTypes();
+
+        if (function.getID().equals("main")) {
+          hasMainFunction = true;
+
+          if (parameters.length > 0) {
+            logError.add(function.getLine() + ", " + function.getColumn() + ": Função main não pode ter parâmetros");
+            stack.push(typeError);
+          }
+        }
 
         SType[] parametersTypes = new SType[parameters.length];
         SType[] returnTypes = new SType[returns.length];
@@ -81,6 +92,11 @@ public class TypeCheckVisitor extends Visitor {
 
         STyFun functionType = new STyFun(parametersTypes, returnTypes);
         
+        if (env.elem(function.getSignature())) {
+          logError.add(function.getLine() + ", " + function.getColumn() + ": Função já definida anteriormente");
+          stack.push(typeError);
+        }
+
         env.set(function.getSignature(), new LocalEnv<SType>(function.getSignature(), functionType));
         functions.add(function);
 
@@ -96,9 +112,19 @@ public class TypeCheckVisitor extends Visitor {
 
         STyDataRegister dataRegisterType = new STyDataRegister(dataRegister.getTypeName(), declarations);
 
+        if (env.elem(dataRegister.getTypeName())) {
+          logError.add(dataRegister.getLine() + ", " + dataRegister.getColumn() + ": Tipo " + dataRegister.getTypeName() + " já definido anteriormente");
+          stack.push(typeError);
+        }
+
         env.set(dataRegister.getTypeName(), new LocalEnv<SType>(dataRegister.getTypeName(), dataRegisterType));
         dataRegisters.add(dataRegister);
       }
+    }
+
+    if (!hasMainFunction) {
+      logError.add("Um programa na linguagem lang precisa ter uma função main");
+      stack.push(typeError);
     }
 
     for (DataRegister dataRegister : dataRegisters) {
@@ -109,7 +135,7 @@ public class TypeCheckVisitor extends Visitor {
       function.accept(this);
     }
     
-    // env.printTable();
+    env.printTable();
   }
 
   private void typeArithmeticBinOp(Node node, String opName, SType[][] typePairs) {
@@ -125,7 +151,7 @@ public class TypeCheckVisitor extends Visitor {
     }
 
     stack.push(typeError);
-    logError.add(node.getLine() + ", " + node.getColumn() + ": Operador" + opName + "não se aplica aos tipos "
+    logError.add(node.getLine() + ", " + node.getColumn() + ": Operador " + opName + " não se aplica aos tipos "
           + typeLeft.toString() + " e " + typeRight.toString());
   }
 
@@ -279,24 +305,42 @@ public class TypeCheckVisitor extends Visitor {
     stack.push(typeChar);
   }
 
-  public void visit(Variable variable) {
-    SType t = temp.get(variable.getName());
-    if (t != null) {
-      for (Expression x : variable.getIdx()) {
-        if (t instanceof STyArr) {
-          t = ((STyArr) t).getArg();
-        } else {
-          t = typeError;
-        }
-      }
-      if (t == typeError) {
-        logError.add(variable.getLine() + ", " + variable.getColumn() + ": Atribuição de tipos incompatíveis " + variable.getName());
-      }
-      stack.push(t);
-    } else {
-      logError.add(variable.getLine() + ", " + variable.getColumn() + ": Variável não declarada " + variable.getName());
+  public void visit(SimpleVariable simpleVariable) {
+    SType variableType = temp.get(simpleVariable.getName());
+
+    if (variableType == null) {
+      logError.add(simpleVariable.getLine() + ", " + simpleVariable.getColumn() + ": Variável não declarada " + simpleVariable.getName());
       stack.push(typeError);
     }
+
+    stack.push(variableType);
+  }
+
+  public void visit(ArrayAccess arrayAccess) {
+    arrayAccess.getArray().accept(this);
+    arrayAccess.getIndex().accept(this);
+
+    SType indexType = stack.pop();
+    SType arrayType = stack.pop();
+
+    if (!indexType.match(typeInt)) {
+      logError.add(arrayAccess.getLine() + ", " + arrayAccess.getColumn() + ": Índice de acesso ao vetor precisa ser do tipo Int");
+      stack.push(typeError);
+      return;
+    }
+
+    if (!(arrayType instanceof STyArr)) {
+      logError.add(arrayAccess.getLine() + ", " + arrayAccess.getColumn() + ": Atribuição de tipos incompatíveis");
+      stack.push(typeError);
+      return;
+    }
+
+    stack.push(((STyArr) arrayType).getArg());
+  }
+
+  public void visit(FieldAccess fieldAccess) {
+    // TODO Auto-generated method stub
+    
   }
 
   public void visit(Call call) {
@@ -328,12 +372,6 @@ public class TypeCheckVisitor extends Visitor {
       k++;
     }
 
-    if (!returnCheck) {
-      return;
-    }
-
-    returnCheck = false;
-
     SType[] returnValues = new SType[typeFunction.getReturnTypes().length];
 
     for (int i = typeFunction.getReturnTypes().length - 1; i >= 0; i--) {
@@ -341,49 +379,69 @@ public class TypeCheckVisitor extends Visitor {
     }
 
     if (call.getReturnIndex() != null) {
-      call.getReturnIndex().accept(this);
-      SType returnIndexType = stack.pop();
-
-      if (!returnIndexType.match(typeInt)) {
+      if (!(call.getReturnIndex() instanceof LiteralInt)) {
         logError.add(call.getLine() + ", " + call.getColumn() + ": " + (k + 1)
-            + "\u00BA índice de acesso ao retorno precisa ser do tipo Int");
+        + "\u00BA índice de acesso ao retorno precisa ser uma constante do tipo Int");
         stack.push(typeError);
         return;
       }
 
-      
-      
-      // Object returnValue = returnValues[returnIndex];
-      // operands.push(returnValue);
+      LiteralInt returnIndex = (LiteralInt) call.getReturnIndex();
+
+      if (returnIndex.getValue() < 0 || returnIndex.getValue() >= returnValues.length) {
+        logError.add(call.getLine() + ", " + call.getColumn() + ": " + (k + 1)
+        + "\u00BA tentativa de acesso a uma posição inexistente dos valores de retorno");
+        stack.push(typeError);
+        return;
+      }
+
+      stack.push(returnValues[returnIndex.getValue()]);
+
+      // call.getReturnIndex().accept(this);
+      // SType returnIndexType = stack.pop();
+
+      // if (!returnIndexType.match(typeInt)) {
+      //   logError.add(call.getLine() + ", " + call.getColumn() + ": " + (k + 1)
+      //       + "\u00BA índice de acesso ao retorno precisa ser do tipo Int");
+      //   stack.push(typeError);
+      //   return;
+      // }
     }
 
     Variable[] variables = call.getVariables();
     if (variables != null && variables.length > 0) {
-      for (int i = 0; i < variables.length; i++) {
-        if (i > returnValues.length - 1) {
-          logError.add(call.getLine() + ", " + call.getColumn() + ": " + (k + 1)
-              + "\u00BA Muitos valores para descompactar");
-        }
-
-        this.assignment(variables[i], returnValues[i]);
+      if (variables.length != returnValues.length) {
+        logError.add(call.getLine() + ", " + call.getColumn() + ": " + (k + 1)
+            + "\u00BA A quantidade de valores de retorno da função é diferente do número de variáveis para atribuição");
       }
-    }  
 
-    for (SType returnType : typeFunction.getReturnTypes()) {
-      stack.push(returnType);
+      for (int i = 0; i < variables.length; i++) {
+        if (i <= returnValues.length - 1) {
+          this.assignment(variables[i], returnValues[i]);
+        }
+      }
     }
   }
 
   public void visit(Assignment assignmentExpression) {
-    if (temp.get(assignmentExpression.getID().getName()) == null && (assignmentExpression.getID().getIdx() == null || assignmentExpression.getID().getIdx().length == 0)) {
-      assignmentExpression.getExp().accept(this);
-      temp.set(assignmentExpression.getID().getName(), stack.pop());
+    assignmentExpression.getExpression().accept(this);
+    SType expressionType = stack.pop();
+
+    this.assignment(assignmentExpression.getID(), expressionType);
+  }
+
+  private void assignment(Variable variable, SType expressionType) {
+    if (variable instanceof SimpleVariable) {
+      this.assignment((SimpleVariable)variable, expressionType);
+
+    } else if (variable instanceof ArrayAccess) {
+      this.assignment((ArrayAccess)variable, expressionType);
+
+    } else if (variable instanceof FieldAccess) {
+      this.assignment((FieldAccess)variable, expressionType);
+
     } else {
-      assignmentExpression.getID().accept(this);
-      assignmentExpression.getExp().accept(this);
-      if (!stack.pop().match(stack.pop())) {
-        logError.add(assignmentExpression.getLine() + ", " + assignmentExpression.getColumn() + ": Atribuição ilegal para a variável " + assignmentExpression.getID());
-      }
+      logError.add(variable.getLine() + ", " + variable.getColumn() + ": Atribuição ilegal para a variável ");
     }
   }
 
@@ -419,17 +477,17 @@ public class TypeCheckVisitor extends Visitor {
     // array.set(index, expressionValue); 
   }
 
-  private void assignment(FieldAccess variable, Object expressionValue) {
-    FieldAccess fieldAccess = (FieldAccess)variable;
+  private void assignment(FieldAccess variable, SType expressionType) {
+    // FieldAccess fieldAccess = (FieldAccess)variable;
 
-    fieldAccess.getObject().accept(this);
+    // fieldAccess.getObject().accept(this);
     
-    @SuppressWarnings("unchecked")
-    HashMap<String, Object> dataRegister = (HashMap<String, Object>)operands.pop();
+    // @SuppressWarnings("unchecked")
+    // HashMap<String, Object> dataRegister = (HashMap<String, Object>)operands.pop();
     
-    String field = fieldAccess.getField();
+    // String field = fieldAccess.getField();
 
-    dataRegister.put(field, expressionValue);
+    // dataRegister.put(field, expressionValue);
   }
 
   public void visit(If ifExpression) {
@@ -505,22 +563,22 @@ public class TypeCheckVisitor extends Visitor {
     
     function.getBody().accept(this);
     
-    if (!returnCheck) {
+    if (!returnCheck && !temp.getFuncID().equals("main0")) {
       logError.add(function.getLine() + ", " + function.getColumn() + ": Função " + function.getID() + " deve retornar algum valor.");
     }
   }
 
-  public void visit(Instance e) {
-    if (temp.get(e.getID().getName()) != null) {
-      logError.add(e.getLine() + ", " + e.getColumn() + ": Redefinição da variável " + e.getID());
-    } else {
-      e.getSize().accept(this);
-      if (stack.pop().match(typeInt)) {
-        e.getTipo().accept(this);
+  public void visit(Instance instance) {
+    // if (temp.get(instance.getID().getName()) != null) {
+    //   logError.add(instance.getLine() + ", " + instance.getColumn() + ": Redefinição da variável " + instance.getID());
+    // } else {
+    //   instance.getSize().accept(this);
+    //   if (stack.pop().match(typeInt)) {
+    //     instance.getTipo().accept(this);
 
-        temp.set(e.getID().getName(), new STyArr(stack.pop()));
-      }
-    }
+    //     temp.set(instance.getID().getName(), new STyArr(stack.pop()));
+    //   }
+    // }
   }
 
   public void visit(Return returnExpression) {
@@ -577,24 +635,6 @@ public class TypeCheckVisitor extends Visitor {
 
   @Override
   public void visit(DataType dataType) {
-    // TODO Auto-generated method stub
-    
-  }
-
-  @Override
-  public void visit(SimpleVariable simpleVariable) {
-    // TODO Auto-generated method stub
-    
-  }
-
-  @Override
-  public void visit(ArrayAccess arrayAccess) {
-    // TODO Auto-generated method stub
-    
-  }
-
-  @Override
-  public void visit(FieldAccess fieldAccess) {
     // TODO Auto-generated method stub
     
   }

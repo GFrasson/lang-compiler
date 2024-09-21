@@ -103,14 +103,7 @@ public class TypeCheckVisitor extends Visitor {
       } else if (definition instanceof DataRegister) {
         DataRegister dataRegister = (DataRegister) definition;
 
-        HashMap<String, SType> declarations = new HashMap<>();
-
-        for (Declaration declaration : dataRegister.getDeclarations()) {
-          declaration.getType().accept(this);
-          declarations.put(declaration.getName(), stack.pop());
-        }
-
-        STyDataRegister dataRegisterType = new STyDataRegister(dataRegister.getTypeName(), declarations);
+        STyDataRegister dataRegisterType = new STyDataRegister(dataRegister.getTypeName());
 
         if (env.elem(dataRegister.getTypeName())) {
           logError.add(dataRegister.getLine() + ", " + dataRegister.getColumn() + ": Tipo " + dataRegister.getTypeName() + " já definido anteriormente");
@@ -311,6 +304,7 @@ public class TypeCheckVisitor extends Visitor {
     if (variableType == null) {
       logError.add(simpleVariable.getLine() + ", " + simpleVariable.getColumn() + ": Variável não declarada " + simpleVariable.getName());
       stack.push(typeError);
+      return;
     }
 
     stack.push(variableType);
@@ -467,14 +461,17 @@ public class TypeCheckVisitor extends Visitor {
       logError.add(arrayAccess.getLine() + ", " + arrayAccess.getColumn() + ": Índice de acesso a um vetor deve ser do tipo Int ");
     }
 
-    SType arrayType = stack.pop();
+    SType array = stack.pop();
 
-    if (!arrayType.match(expressionType)) {
-      logError.add(arrayAccess.getLine() + ", " + arrayAccess.getColumn() + ": Tentativa de acesso de posição de vetor em uma variável do tipo " + expressionType.toString());
+    if (!(array instanceof STyArr)) {
+      logError.add(arrayAccess.getLine() + ", " + arrayAccess.getColumn() + ": Tentativa de acesso de posição de vetor em uma variável do tipo " + array.toString());
+      return;
     }
 
-
-    // array.set(index, expressionValue); 
+    STyArr arrayType = (STyArr) array;
+    if (!arrayType.getArg().match(expressionType)) {
+      logError.add(arrayAccess.getLine() + ", " + arrayAccess.getColumn() + ": Tentativa de atribuição de valor do tipo " + expressionType.toString() + " a um vetor do tipo " + arrayType.toString());
+    }
   }
 
   private void assignment(FieldAccess variable, SType expressionType) {
@@ -543,7 +540,7 @@ public class TypeCheckVisitor extends Visitor {
   }
 
   public void visit(Read read) {
-    
+
   }
 
   public void visit(Block block) {
@@ -569,16 +566,24 @@ public class TypeCheckVisitor extends Visitor {
   }
 
   public void visit(Instance instance) {
-    // if (temp.get(instance.getID().getName()) != null) {
-    //   logError.add(instance.getLine() + ", " + instance.getColumn() + ": Redefinição da variável " + instance.getID());
-    // } else {
-    //   instance.getSize().accept(this);
-    //   if (stack.pop().match(typeInt)) {
-    //     instance.getTipo().accept(this);
+    if (instance.getSize() != null) {
+      instance.getSize().accept(this);
+      SType sizeType = stack.pop();
+      
+      if (!sizeType.match(typeInt)) {
+        logError.add(instance.getLine() + ", " + instance.getColumn() + ": O tamanho do vetor alocado deve ser do tipo Int");
+        stack.push(typeError);
+      }
 
-    //     temp.set(instance.getID().getName(), new STyArr(stack.pop()));
-    //   }
-    // }
+      instance.getType().accept(this);
+      stack.push(new STyArr(stack.pop()));
+    } else if (instance.getType() instanceof DataType) {
+      DataType dataType = (DataType) instance.getType();
+      dataType.accept(this);
+    } else {
+      logError.add(instance.getLine() + ", " + instance.getColumn() + ": Instância inválida do tipo " + instance.getType().toString());
+      stack.push(typeError);
+    }
   }
 
   public void visit(Return returnExpression) {
@@ -635,19 +640,34 @@ public class TypeCheckVisitor extends Visitor {
 
   @Override
   public void visit(DataType dataType) {
-    // TODO Auto-generated method stub
-    
+    LocalEnv<SType> dataRegisterEnv = env.get(dataType.getTypeName());
+
+    if (dataRegisterEnv == null) {
+      logError.add(dataType.getLine() + ", " + dataType.getColumn() + ": O tipo " + dataType.getTypeName() + " não está definido");
+      stack.push(typeError);
+      return;
+    }
+
+    stack.push(dataRegisterEnv.getFunctionType());
   }
 
   @Override
-  public void visit(Declaration declaration) {
-    // TODO Auto-generated method stub
-    
+  public void visit(Declaration declaration) {    
   }
 
   @Override
   public void visit(DataRegister dataRegister) {
-    // TODO Auto-generated method stub
-    
+    ArrayList<String> declarationNames = new ArrayList<>();
+
+    for (Declaration declaration : dataRegister.getDeclarations()) {
+      declaration.getType().accept(this);
+      stack.pop();
+
+      if (declarationNames.contains(declaration.getName())) {
+        logError.add(declaration.getLine() + ", " + declaration.getColumn() + ": Atributo " + declaration.getName() + " já definido anteriormente.");
+      }
+
+      declarationNames.add(declaration.getName());
+    }
   }
 }

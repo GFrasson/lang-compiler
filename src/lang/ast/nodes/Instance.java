@@ -35,7 +35,7 @@ public class Instance extends Expression {
 
   // @Override
   public String toString() {
-    return "$" + type.toString() + " " + size.toString() + ";";
+    return "new " + type.toString() + " " + size.toString() + ";";
   }
 
   public void accept(Visitor visitor) {

@@ -10,6 +10,10 @@ public class STyErr extends SType {
     return stype;
   }
 
+  public SType clone() {
+    return STyErr.newSTyErr();
+  }
+
   public boolean match(SType v) {
     return true;
   }

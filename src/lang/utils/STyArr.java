@@ -11,6 +11,10 @@ public class STyArr extends SType {
     return arg;
   }
 
+  public SType clone() {
+    return new STyArr(this.arg.clone());
+  }
+
   public boolean match(SType value) {
     return (value instanceof STyErr) || (value instanceof STyArr) && (arg.match(((STyArr) value).getArg()));
   }

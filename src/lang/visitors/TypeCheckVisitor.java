@@ -20,7 +20,9 @@ import java.util.Stack;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.Map;
 import java.util.List;
+import java.util.stream.Collectors;
 
 
 public class TypeCheckVisitor extends Visitor {
@@ -34,7 +36,8 @@ public class TypeCheckVisitor extends Visitor {
   private ArrayList<String> logError;
 
   private TyEnv<LocalEnv<SType>> env;
-  private LocalEnv<SType> temp;
+  private LocalEnv<SType> temp; 
+  private HashMap<String, HashMap<String, SType>> typeDataRegisters;
 
   private Stack<SType> stack;
   private boolean returnCheck;
@@ -43,6 +46,7 @@ public class TypeCheckVisitor extends Visitor {
     stack = new Stack<SType>();
     env = new TyEnv<LocalEnv<SType>>();
     logError = new ArrayList<String>();
+    typeDataRegisters = new HashMap<>();
   }
 
   public int getNumErrors() {
@@ -56,6 +60,7 @@ public class TypeCheckVisitor extends Visitor {
   }
 
   public void visit(Program program) {
+    System.out.println("PROGRAM");
     ArrayList<Function> functions = new ArrayList<>();
     ArrayList<DataRegister> dataRegisters = new ArrayList<>();
 
@@ -103,14 +108,14 @@ public class TypeCheckVisitor extends Visitor {
       } else if (definition instanceof DataRegister) {
         DataRegister dataRegister = (DataRegister) definition;
 
-        STyDataRegister dataRegisterType = new STyDataRegister(dataRegister.getTypeName());
+        // STyDataRegister dataRegisterType = new STyDataRegister(dataRegister.getTypeName(), false);
 
-        if (env.elem(dataRegister.getTypeName())) {
+        if (this.typeDataRegisters.containsKey(dataRegister.getTypeName())) {
           logError.add(dataRegister.getLine() + ", " + dataRegister.getColumn() + ": Tipo " + dataRegister.getTypeName() + " já definido anteriormente");
           stack.push(typeError);
         }
 
-        env.set(dataRegister.getTypeName(), new LocalEnv<SType>(dataRegister.getTypeName(), dataRegisterType));
+        this.typeDataRegisters.put(dataRegister.getTypeName(), null);
         dataRegisters.add(dataRegister);
       }
     }
@@ -131,13 +136,18 @@ public class TypeCheckVisitor extends Visitor {
     env.printTable();
   }
 
-  private void typeArithmeticBinOp(Node node, String opName, SType[][] typePairs) {
+  private void typeBinOp(Node node, String opName, SType[][] typePairs, boolean logical) {
     SType typeRight = stack.pop();
     SType typeLeft = stack.pop();
 
     for (int i = 0; i < typePairs.length; i++) {
       SType[] typePair = typePairs[i];
       if (typeLeft.match(typePair[0]) && typeRight.match(typePair[1])) {
+        if (logical) {
+          stack.push(typeBool);
+          return;
+        }
+
         stack.push(typeLeft);
         return;
       }
@@ -149,6 +159,8 @@ public class TypeCheckVisitor extends Visitor {
   }
 
   public void visit(Add add) {
+    System.out.println("ADD");
+
     add.getLeft().accept(this);
     add.getRight().accept(this);
     SType[][] typePairs = {
@@ -156,10 +168,12 @@ public class TypeCheckVisitor extends Visitor {
       {typeFloat, typeFloat}
     };
 
-    typeArithmeticBinOp(add, "+", typePairs);
+    typeBinOp(add, "+", typePairs, false);
   }
 
   public void visit(Subtraction subtraction) {
+    System.out.println("SUB");
+
     subtraction.getLeft().accept(this);
     subtraction.getRight().accept(this);
     SType[][] typePairs = {
@@ -167,10 +181,12 @@ public class TypeCheckVisitor extends Visitor {
       {typeFloat, typeFloat}
     };
 
-    typeArithmeticBinOp(subtraction, "-", typePairs);
+    typeBinOp(subtraction, "-", typePairs, false);
   }
 
   public void visit(Multiplication multiplication) {
+    System.out.println("MULT");
+
     multiplication.getLeft().accept(this);
     multiplication.getRight().accept(this);
     SType[][] typePairs = {
@@ -178,10 +194,12 @@ public class TypeCheckVisitor extends Visitor {
       {typeFloat, typeFloat}
     };
 
-    typeArithmeticBinOp(multiplication, "*", typePairs);
+    typeBinOp(multiplication, "*", typePairs, false);
   }
 
   public void visit(Division division) {
+    System.out.println("DIV");
+
     division.getLeft().accept(this);
     division.getRight().accept(this);
     SType[][] typePairs = {
@@ -189,7 +207,7 @@ public class TypeCheckVisitor extends Visitor {
       {typeFloat, typeFloat}
     };
 
-    typeArithmeticBinOp(division, "/", typePairs);
+    typeBinOp(division, "/", typePairs, false);
   }
 
   public void visit(Modulus modulus) {
@@ -199,7 +217,7 @@ public class TypeCheckVisitor extends Visitor {
       {typeInt, typeInt}
     };
 
-    typeArithmeticBinOp(modulus, "%", typePairs);
+    typeBinOp(modulus, "%", typePairs, false);
   }
 
   public void visit(And and) {
@@ -209,7 +227,7 @@ public class TypeCheckVisitor extends Visitor {
       {typeBool, typeBool}
     };
 
-    typeArithmeticBinOp(and, "&&", typePairs);
+    typeBinOp(and, "&&", typePairs, true);
   }
 
   public void visit(LessThan lessThan) {
@@ -221,7 +239,7 @@ public class TypeCheckVisitor extends Visitor {
       {typeChar, typeChar}
     };
 
-    typeArithmeticBinOp(lessThan, "<", typePairs);
+    typeBinOp(lessThan, "<", typePairs, true);
   }
 
   public void visit(Equals equals) {
@@ -233,7 +251,7 @@ public class TypeCheckVisitor extends Visitor {
       {typeChar, typeChar}
     };
 
-    typeArithmeticBinOp(equals, "==", typePairs);
+    typeBinOp(equals, "==", typePairs, true);
   }
 
   public void visit(NotEquals notEquals) {
@@ -245,7 +263,7 @@ public class TypeCheckVisitor extends Visitor {
       {typeChar, typeChar}
     };
 
-    typeArithmeticBinOp(notEquals, "!=", typePairs);
+    typeBinOp(notEquals, "!=", typePairs, true);
   }
 
   public void visit(Not not) {
@@ -299,7 +317,14 @@ public class TypeCheckVisitor extends Visitor {
   }
 
   public void visit(SimpleVariable simpleVariable) {
+    System.out.println("SIMPLE VARIABLE");
+    System.out.println(stack);
+    System.out.println(simpleVariable);
+
     SType variableType = temp.get(simpleVariable.getName());
+
+    System.out.println(variableType);
+
 
     if (variableType == null) {
       logError.add(simpleVariable.getLine() + ", " + simpleVariable.getColumn() + ": Variável não declarada " + simpleVariable.getName());
@@ -308,9 +333,14 @@ public class TypeCheckVisitor extends Visitor {
     }
 
     stack.push(variableType);
+
+    System.out.println(stack);
+
   }
 
   public void visit(ArrayAccess arrayAccess) {
+    System.out.println("ARRAY ACCESS");
+    
     arrayAccess.getArray().accept(this);
     arrayAccess.getIndex().accept(this);
 
@@ -333,11 +363,26 @@ public class TypeCheckVisitor extends Visitor {
   }
 
   public void visit(FieldAccess fieldAccess) {
-    // TODO Auto-generated method stub
+    System.out.println("FIELD ACCESS");
+
+    STyDataRegister dataRegisterType = this.fieldAccessVerify(fieldAccess);
+    if (dataRegisterType == null) {
+      return;
+    }
+
+    fieldAccess.getObject().accept(this);
+    
+    SType declarationType = dataRegisterType.getDeclaration(fieldAccess.getField());
+    // SType declarationType = this.typeDataRegisters.get(dataRegisterType.getName()).get(fieldAccess.getField());
+    stack.push(declarationType);
+
+    System.out.println("FIELD ACCESS");
     
   }
 
   public void visit(Call call) {
+    System.out.println("CALL");
+
     String functionSignature = call.getFunctionName() + call.getArguments().length;
     LocalEnv<SType> localEnv = env.get(functionSignature);
 
@@ -366,11 +411,9 @@ public class TypeCheckVisitor extends Visitor {
       k++;
     }
 
-    SType[] returnValues = new SType[typeFunction.getReturnTypes().length];
+    System.out.println(stack);
 
-    for (int i = typeFunction.getReturnTypes().length - 1; i >= 0; i--) {
-      returnValues[i] = stack.pop();
-    }
+    SType[] returnTypes = typeFunction.getReturnTypes();
 
     if (call.getReturnIndex() != null) {
       if (!(call.getReturnIndex() instanceof LiteralInt)) {
@@ -382,14 +425,14 @@ public class TypeCheckVisitor extends Visitor {
 
       LiteralInt returnIndex = (LiteralInt) call.getReturnIndex();
 
-      if (returnIndex.getValue() < 0 || returnIndex.getValue() >= returnValues.length) {
+      if (returnIndex.getValue() < 0 || returnIndex.getValue() >= returnTypes.length) {
         logError.add(call.getLine() + ", " + call.getColumn() + ": " + (k + 1)
         + "\u00BA tentativa de acesso a uma posição inexistente dos valores de retorno");
         stack.push(typeError);
         return;
       }
 
-      stack.push(returnValues[returnIndex.getValue()]);
+      stack.push(returnTypes[returnIndex.getValue()]);
 
       // call.getReturnIndex().accept(this);
       // SType returnIndexType = stack.pop();
@@ -404,20 +447,22 @@ public class TypeCheckVisitor extends Visitor {
 
     Variable[] variables = call.getVariables();
     if (variables != null && variables.length > 0) {
-      if (variables.length != returnValues.length) {
+      if (variables.length != returnTypes.length) {
         logError.add(call.getLine() + ", " + call.getColumn() + ": " + (k + 1)
             + "\u00BA A quantidade de valores de retorno da função é diferente do número de variáveis para atribuição");
       }
 
       for (int i = 0; i < variables.length; i++) {
-        if (i <= returnValues.length - 1) {
-          this.assignment(variables[i], returnValues[i]);
+        if (i <= returnTypes.length - 1) {
+          this.assignment(variables[i], returnTypes[i]);
         }
       }
     }
   }
 
   public void visit(Assignment assignmentExpression) {
+    System.out.println("ASSIGNMENT");
+
     assignmentExpression.getExpression().accept(this);
     SType expressionType = stack.pop();
 
@@ -440,8 +485,13 @@ public class TypeCheckVisitor extends Visitor {
   }
 
   private void assignment(SimpleVariable simpleVariable, SType expressionType) {
+    System.out.println("ASSIGNMENT AUX - SIMPLE VARIABLE");
+
     if (!temp.elem(simpleVariable.getName())) {
       temp.set(simpleVariable.getName(), expressionType);
+
+      System.out.println("PRINT TABLE");
+      temp.printTable();
       return;
     }
 
@@ -450,9 +500,19 @@ public class TypeCheckVisitor extends Visitor {
     if (!variableType.match(expressionType)) {
       logError.add(simpleVariable.getLine() + ", " + simpleVariable.getColumn() + ": Atribuição ilegal para a variável " + simpleVariable.getName());
     }
+
+    temp.set(simpleVariable.getName(), expressionType);
+
+
+    System.out.println("PRINT TABLE 2");
+    temp.printTable();
   }
 
   private void assignment(ArrayAccess arrayAccess, SType expressionType) {
+    System.out.println("ASSIGNMENT AUX - ARRAY ACCESS");
+
+    System.out.println(expressionType);
+
     arrayAccess.getArray().accept(this);
     arrayAccess.getIndex().accept(this);
     
@@ -474,17 +534,101 @@ public class TypeCheckVisitor extends Visitor {
     }
   }
 
-  private void assignment(FieldAccess variable, SType expressionType) {
-    // FieldAccess fieldAccess = (FieldAccess)variable;
+  private void assignment(FieldAccess fieldAccess, SType expressionType) {
+    System.out.println("ASSIGNMENT AUX - FIELD ACCESS");
 
-    // fieldAccess.getObject().accept(this);
-    
-    // @SuppressWarnings("unchecked")
-    // HashMap<String, Object> dataRegister = (HashMap<String, Object>)operands.pop();
-    
-    // String field = fieldAccess.getField();
+    System.out.println(stack);
 
-    // dataRegister.put(field, expressionValue);
+    STyDataRegister dataRegisterType = this.fieldAccessVerify(fieldAccess);
+    if (dataRegisterType == null) {
+      return;
+    }
+
+    SType declarationType = dataRegisterType.getDeclaration(fieldAccess.getField());
+    // SType declarationType = this.typeDataRegisters.get(dataRegisterType.getName()).get(fieldAccess.getField());
+
+    if (!declarationType.match(expressionType)) {
+      logError.add(fieldAccess.getLine() + ", " + fieldAccess.getColumn() + ": Tentativa de atribuição de valor do tipo " + expressionType.toString() + " a um atributo do tipo " + declarationType.toString());
+      return;
+    }
+
+    dataRegisterType.putDeclaration(fieldAccess.getField(), expressionType);
+
+    System.out.println(dataRegisterType.toString());
+    System.out.println(fieldAccess.getField());
+    System.out.println(declarationType.toString());
+    System.out.println("PRINT TABLE 3");
+    temp.printTable();
+  }
+
+  private STyDataRegister fieldAccessVerify(FieldAccess fieldAccess) {
+    System.out.println("FIELD ACCESS VERIFY");
+
+    fieldAccess.getObject().accept(this);
+    System.out.println(stack);
+    SType dataRegister = stack.pop();
+
+
+    if (!(dataRegister instanceof STyDataRegister)) {
+      logError.add(fieldAccess.getLine() + ", " + fieldAccess.getColumn() + ": Tentativa de acesso de atributo em uma variável do tipo " + dataRegister.toString());
+      return null;
+    }
+
+    STyDataRegister dataRegisterType = (STyDataRegister) dataRegister;
+
+    System.out.println("VERIFY");
+    System.out.println(dataRegisterType);
+    System.out.println(dataRegisterType.isInitialized());
+    
+    if (!this.typeDataRegisters.containsKey(dataRegisterType.getName())) {
+      logError.add(fieldAccess.getLine() + ", " + fieldAccess.getColumn() + ": O tipo " + dataRegisterType.getName() + " não está definido");
+      return null;
+    }
+
+    HashMap<String, SType> declarations = this.typeDataRegisters.get(dataRegisterType.getName());
+
+    String field = fieldAccess.getField();
+
+    if (!declarations.containsKey(field)) {
+      logError.add(fieldAccess.getLine() + ", " + fieldAccess.getColumn() + ": Atributo " + field + " não está definido no tipo " + dataRegisterType.toString());
+      return null;
+    }
+
+    if (!dataRegisterType.isInitialized()) {
+      System.out.println("ERRO");
+      logError.add(fieldAccess.getLine() + ", " + fieldAccess.getColumn() + ": Atributo " + dataRegisterType.toString() + " não foi inicializado");
+      return null;
+    }
+
+    // SType declaration = declarations.get(field);
+
+    // if (declaration instanceof STyDataRegister) {
+    //   STyDataRegister declarationDataRegisterType = (STyDataRegister) declaration;
+    //   // System.out.println("DATA " + this.name);
+    //   // System.out.println("DECLARATION " + declaration.toString());
+    //   // System.out.println(dataRegisterType.isInitialized());
+    //   if (!declarationDataRegisterType.isInitialized()) {
+    //     logError.add(fieldAccess.getLine() + ", " + fieldAccess.getColumn() + ": Atributo " + field + " não foi inicializado");
+    //     return null;
+    //   }
+    // }
+
+    // if (declaration instanceof STyArr) {
+    //   STyArr arrayType = (STyArr) declaration;
+    //   // System.out.println("ARRAY");
+    //   // System.out.println(arrayType.isInitialized());
+    //   if (!arrayType.isInitialized()) {
+    //     logError.add(fieldAccess.getLine() + ", " + fieldAccess.getColumn() + ": Atributo " + field + " não foi inicializado");
+    //     return null;
+    //   }
+    // }
+
+    // if (declaration == null) {
+    //   logError.add(fieldAccess.getLine() + ", " + fieldAccess.getColumn() + ": Atributo " + field + " não foi inicializado");
+    //   return null;
+    // }
+
+    return dataRegisterType;
   }
 
   public void visit(If ifExpression) {
@@ -550,6 +694,8 @@ public class TypeCheckVisitor extends Visitor {
   }
 
   public void visit(Function function) {
+    System.out.println("FUNCTION");
+
     returnCheck = false;
     temp = env.get(function.getSignature());
     
@@ -567,6 +713,8 @@ public class TypeCheckVisitor extends Visitor {
 
   public void visit(Instance instance) {
     if (instance.getSize() != null) {
+      System.out.println("INSTANCE - ARRAY");
+
       instance.getSize().accept(this);
       SType sizeType = stack.pop();
       
@@ -578,8 +726,29 @@ public class TypeCheckVisitor extends Visitor {
       instance.getType().accept(this);
       stack.push(new STyArr(stack.pop()));
     } else if (instance.getType() instanceof DataType) {
+      System.out.println("INSTANCE - DATA");
+
       DataType dataType = (DataType) instance.getType();
       dataType.accept(this);
+      
+      SType dataRegisterTypeAux = stack.pop();
+
+      System.out.println(dataRegisterTypeAux);
+
+      if (dataRegisterTypeAux instanceof STyDataRegister) {
+        System.out.println("INITIALIZE");
+        STyDataRegister dataRegisterType = (STyDataRegister) dataRegisterTypeAux;
+        dataRegisterType.setInitialized(true);
+        System.out.println(dataRegisterTypeAux);
+
+        stack.push(dataRegisterType);
+      }
+
+      System.out.println(stack);
+
+      // STyDataRegister dataRegisterType = new STyDataRegister(dataType.getTypeName(), true);
+
+
     } else {
       logError.add(instance.getLine() + ", " + instance.getColumn() + ": Instância inválida do tipo " + instance.getType().toString());
       stack.push(typeError);
@@ -587,6 +756,8 @@ public class TypeCheckVisitor extends Visitor {
   }
 
   public void visit(Return returnExpression) {
+    System.out.println("RETURN");
+
     if (!(temp.getFunctionType() instanceof STyFun)) {
       logError.add(returnExpression.getLine() + ", " + returnExpression.getColumn() + "Retorno fora de uma função");
       return;
@@ -634,40 +805,100 @@ public class TypeCheckVisitor extends Visitor {
   }
 
   public void visit(ArrayType arrayType) {
+    System.out.println("ARRAY TYPE");
+
     arrayType.getArgumentType().accept(this);
     stack.push(new STyArr(stack.pop()));
   }
 
-  @Override
   public void visit(DataType dataType) {
-    LocalEnv<SType> dataRegisterEnv = env.get(dataType.getTypeName());
+    System.out.println("DATA TYPE");
 
-    if (dataRegisterEnv == null) {
+    // LocalEnv<SType> dataRegisterEnv = env.get(dataType.getTypeName());
+
+    // if (dataRegisterEnv == null) {
+    //   logError.add(dataType.getLine() + ", " + dataType.getColumn() + ": O tipo " + dataType.getTypeName() + " não está definido");
+    //   stack.push(typeError);
+    //   return;
+    // }
+
+    // stack.push(dataRegisterEnv.getFunctionType());
+
+
+    if (!this.typeDataRegisters.containsKey(dataType.getTypeName())) {
       logError.add(dataType.getLine() + ", " + dataType.getColumn() + ": O tipo " + dataType.getTypeName() + " não está definido");
       stack.push(typeError);
       return;
     }
 
-    stack.push(dataRegisterEnv.getFunctionType());
+    HashMap<String, SType> declarations = this.typeDataRegisters.get(dataType.getTypeName());
+
+    if (declarations == null) {
+      stack.push(new STyDataRegister(dataType.getTypeName(), false));
+      return;
+    }
+
+    HashMap<String, SType> declarationsCopy = new HashMap<>();
+    for (Map.Entry<String, SType> entry : declarations.entrySet())
+    {
+      declarationsCopy.put(entry.getKey(), entry.getValue().clone());
+    }
+
+    stack.push(new STyDataRegister(dataType.getTypeName(), false, declarationsCopy));
   }
 
-  @Override
   public void visit(Declaration declaration) {    
   }
 
-  @Override
   public void visit(DataRegister dataRegister) {
-    ArrayList<String> declarationNames = new ArrayList<>();
+    System.out.println("DATA REGISTER");
+
+    // STyDataRegister dataRegisterType = this.getDataRegisterType(dataRegister);
+    // if (dataRegisterType == null) {
+    //   return;
+    // }
+
+    if (!this.typeDataRegisters.containsKey(dataRegister.getTypeName())) {
+      logError.add(dataRegister.getLine() + ", " + dataRegister.getColumn() + ": O tipo " + dataRegister.getTypeName() + " não está definido");
+      return;
+    }
+    
+    HashMap<String, SType> declarations = new HashMap<>();
+
+    System.out.println("AAAAAAAAA");
 
     for (Declaration declaration : dataRegister.getDeclarations()) {
       declaration.getType().accept(this);
-      stack.pop();
+      SType declarationType = stack.pop();
 
-      if (declarationNames.contains(declaration.getName())) {
+      if (declarations.containsKey(declaration.getName())) {
         logError.add(declaration.getLine() + ", " + declaration.getColumn() + ": Atributo " + declaration.getName() + " já definido anteriormente.");
       }
-
-      declarationNames.add(declaration.getName());
+      
+      declarations.put(declaration.getName(), declarationType);
     }
+
+    this.typeDataRegisters.put(dataRegister.getTypeName(), declarations);
+
+    System.out.println(this.typeDataRegisters);
   }
+
+  // private STyDataRegister getDataRegisterDeclarations(DataRegister dataRegister) {
+  //   if (!this.typeDataRegisters.containsKey(dataRegister.getTypeName())) {
+  //     logError.add(dataRegister.getLine() + ", " + dataRegister.getColumn() + ": O tipo " + dataRegister.getTypeName() + " não está definido");
+  //     return null;
+  //   }
+    
+  //   return this.typeDataRegisters.get(dataRegister.getTypeName());
+
+
+  //   // SType dataRegisterTypeAux = dataRegisterEnv.getFunctionType();
+
+  //   // if (!(dataRegisterTypeAux instanceof STyDataRegister)) {
+  //   //   logError.add(dataRegister.getLine() + ", " + dataRegister.getColumn() + ": O tipo " + dataRegister.getTypeName() + " não está definido");
+  //   //   return null;
+  //   // }
+
+  //   // return (STyDataRegister) dataRegisterTypeAux;
+  // }
 }

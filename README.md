@@ -69,3 +69,24 @@ Execute o comando na raiz da aplicação.
 make run-interpreter FILE=./exemplos/testes/sintaxe/certo/attrADD.lan
 ```
  - OBS: Substitua o caminho do arquivo para testar outros exemplos
+
+
+# Analisador Semântico
+
+O analisador semântico foi construído utilizando a estratégia de um visitor TypeCheckVisitor.
+
+## Versão do JAVA
+**11.0.22**
+
+## Compilação
+Execute o comando na raiz da aplicação
+```bash
+make
+```
+
+## Execução - Análise Semântica
+Execute o comando na raiz da aplicação.
+```bash
+make run-semantic FILE=./testes/semantica/certo/teste0.lan
+```
+ - OBS: Substitua o caminho do arquivo para testar outros exemplos

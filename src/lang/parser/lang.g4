@@ -302,6 +302,8 @@ NEWLINE: '\r'? '\n' -> skip;
 WHITESPACE: [ \t\f]+ -> skip;
 LINE_COMMENT: '--' ~('\r' | '\n' | [\r\n])* NEWLINE -> skip;
 COMMENT: '{-' .*? '-}' -> skip;
+LEXER_ERROR : . {  System.err.println("Illegal character " + getText() + " at line " + getLine()); };
+
 // UNTERMINATED_COMMENT: '{-' .*? EOF {
 //     throw new RuntimeException("Unterminated comment detected at line " + getLine() + ", position " + getCharPositionInLine());
 // };

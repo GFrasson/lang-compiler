@@ -49,7 +49,7 @@ public class TypeCheckVisitor extends Visitor {
 
   public void printErrors() {
     for (String s : logError) {
-      System.out.println(s);
+      System.out.println("ERRO: " + s);
     }
   }
 
@@ -134,7 +134,7 @@ public class TypeCheckVisitor extends Visitor {
       function.accept(this);
     }
     
-    env.printTable();
+    //env.printTable();
   }
 
   private void typeBinOp(Node node, String opName, SType[][] typePairs, boolean logical) {

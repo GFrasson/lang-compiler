@@ -10,10 +10,6 @@ public class STyChar extends SType {
     return stype;
   }
 
-  public SType clone() {
-    return STyChar.newSTyChar(); 
-  }
-
   public boolean match(SType v) {
     return (v instanceof STyErr) || (v instanceof STyChar);
   }

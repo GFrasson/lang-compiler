@@ -10,10 +10,6 @@ public class STyFloat extends SType {
     return stype;
   }
 
-  public SType clone() {
-    return STyFloat.newSTyFloat();
-  }
-
   public boolean match(SType v) {
     return (v instanceof STyErr) || (v instanceof STyFloat);
   }

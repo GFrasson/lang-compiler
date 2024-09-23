@@ -10,10 +10,6 @@ public class STyBool extends SType {
     return stype;
   }
 
-  public SType clone() {
-    return STyBool.newSTyBool();
-  }
-
   public boolean match(SType v) {
     return (v instanceof STyErr) || (v instanceof STyBool);
   }

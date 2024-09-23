@@ -17,21 +17,6 @@ public class STyFun extends SType {
     return returnTypes;
   }
 
-  public SType clone() {
-    SType[] parameterTypesClone = new SType[parameterTypes.length]; 
-    SType[] returnTypesClone = new SType[returnTypes.length]; 
-
-    for (int i = 0; i < parameterTypes.length; i++) {
-      parameterTypesClone[i] = parameterTypes[i].clone();
-    }
-
-    for (int i = 0; i < returnTypes.length; i++) {
-      returnTypesClone[i] = returnTypes[i].clone();
-    }
-
-    return new STyFun(parameterTypesClone, returnTypesClone);
-  }
-
   public boolean match(SType value) {
     if (value instanceof STyErr) {
       return true;

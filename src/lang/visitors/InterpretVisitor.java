@@ -476,36 +476,29 @@ public class InterpretVisitor extends Visitor {
   public void visit(Read read) {
     String text = keyboard.next();
 
-    ArrayList<java.util.function.Function<String, Object>> parseFunctions = new ArrayList<>(
-      Arrays.asList(
-        (String input) -> { return Integer.parseInt(input); },
-        (String input) -> { return Float.parseFloat(input); },
-        (String input) -> { return input.toCharArray()[0]; }
-      )
-    );
+    read.getVariable().accept(this);
+    Object readVariableValue = operands.pop();
 
     try {
-      for (java.util.function.Function<String, Object> parseFunction : parseFunctions) {
-        Object result = this.parseInput(text, parseFunction);
-        if (result != null) {
-          this.assignment(read.getVariable(), result);
+      if (readVariableValue instanceof Character) {
+        this.assignment(read.getVariable(), text.toCharArray()[0]);
+      } else if (readVariableValue instanceof Integer) {
+        this.assignment(read.getVariable(), Integer.parseInt(text));
+      } else if (readVariableValue instanceof Float) {
+        this.assignment(read.getVariable(), Float.parseFloat(text));
+      } else if (readVariableValue instanceof Boolean) {
+        if (text.equals("true")) {
+          this.assignment(read.getVariable(), true);
+          return;
+        } else if (text.equals("false")) {
+          this.assignment(read.getVariable(), false);
           return;
         }
+
+        throw new NumberFormatException("Cannot convert to boolean type");  
       }
     } catch (Exception e) {
       throw new RuntimeException(" (" + read.getLine() + ", " + read.getColumn() + ") Invalid input.");
-    }
-
-    throw new RuntimeException(" (" + read.getLine() + ", " + read.getColumn() + ") Invalid input");
-  }
-
-  private Object parseInput(String input, java.util.function.Function<String, Object> parseFunction) {
-    try {
-      return parseFunction.apply(input);
-    } catch (NumberFormatException e) {
-      return null;
-    } catch (Exception e) {
-      throw e;
     }
   }
 

@@ -10,10 +10,6 @@ public class STyNull extends SType {
     return stype;
   }
 
-  public SType clone() {
-    return STyNull.newSTyNull();
-  }
-
   public boolean match(SType v) {
     return (v instanceof STyErr) || (v instanceof STyNull);
   }

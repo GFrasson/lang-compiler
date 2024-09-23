@@ -68,7 +68,7 @@ public class LangCompiler {
         } else {
           System.out.println("typing  ... [ ok ]"); 
           
-          InterpretVisitor interpretVisitor = new InterpretVisitor(true);
+          InterpretVisitor interpretVisitor = new InterpretVisitor();
           program.accept(interpretVisitor);
         }
       } else if (args[0].equals("-pp")) {

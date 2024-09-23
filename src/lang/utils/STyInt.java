@@ -10,10 +10,6 @@ public class STyInt extends SType {
     return stype;
   }
 
-  public SType clone() {
-    return STyInt.newSTyInt();
-  }
-
   public boolean match(SType v) {
     return (v instanceof STyErr) || (v instanceof STyInt);
   }

@@ -1,0 +1,104 @@
+/*
+* Equipe:
+* ÁGATA MEIRELES CARVALHO - 202065001C
+* GABRIEL FRASSON COSTA - 202035001
+*/
+
+// Template para a tradução de um programa inteiro
+program(name, funcs) ::= <<
+public class <name> {
+    <funcs; separator="\n">
+}
+>>
+
+// Template para funções
+func(name, type, params, stmt, decl) ::= <<
+public <type> <name>(<params; separator=", ">) {
+    <decl; separator="\n">
+    <stmt>
+}
+>>
+
+// Template para declaração de variáveis dentro da função
+param(type, name) ::= << <type> <name> >>
+
+// Template para declarações de variáveis locais dentro de funções
+var_decl(type, name) ::= << <type> <name>; >>
+
+// Template para tipos básicos (Int, Float, etc.)
+int_type() ::= << int >>
+float_type() ::= << float >>
+boolean_type() ::= << boolean >>
+char_type() ::= << char >>
+
+// Template para expressão de adição
+add_expr(left_expr, right_expr) ::= << <left_expr> + <right_expr> >>
+
+// Template para expressão de subtração
+sub_expr(left_expr, right_expr) ::= << <left_expr> - <right_expr> >>
+
+// Template para expressão de multiplicação
+mul_expr(left_expr, right_expr) ::= << <left_expr> * <right_expr> >>
+
+// Template para expressão de divisão
+div_expr(left_expr, right_expr) ::= << <left_expr> / <right_expr> >>
+
+// Template para expressão de mod
+mod_expr(left_expr, right_expr) ::= << <left_expr> % <right_expr> >>
+
+// Template para expressão "menor que"
+lt_expr(left_expr, right_expr) ::= << <left_expr> < <right_expr> >>
+
+// Template para expressão "igual a"
+eq_expr(left_expr, right_expr) ::= << <left_expr> == <right_expr> >>
+
+// Template para expressão "e lógico"
+and_expr(left_expr, right_expr) ::= << <left_expr> && <right_expr> >>
+
+// Template para literal booleano
+boolean_expr(value) ::= << <value> >>
+
+// Template para literal inteiro
+int_expr(value) ::= << <value> >>
+
+// Template para literal float
+float_expr(value) ::= << <value> >>
+
+// Template para variável
+lvalue(name, array) ::= <<
+<name><if(array)><array; separator="[]"><endif>
+>>
+
+// Template para atribuição de variável
+attr(var, expr) ::= << <var> = <expr>; >>
+
+// Template para chamadas de função
+call(name, args) ::= << <name>(<args; separator=", ">) >>
+
+// Template para comando `if`
+if(expr, thn, els) ::= <<
+if(<expr>) {
+    <thn>
+} <if(els)>else {
+    <els>
+}<endif>
+>>
+
+// Template para laço `while`
+while(expr, stmt) ::= <<
+while(<expr>) {
+    <stmt>
+}
+>>
+
+// Template para comando `print`
+print(expr) ::= << System.out.println(<expr>); >>
+
+// Template para lista de comandos
+stmt_list(stmt1, stmt2) ::= <<
+<stmt1>
+<if(stmt2)><stmt2><endif>
+>>
+
+// Template para comando `return`
+return(expr) ::= << return <expr>; >>

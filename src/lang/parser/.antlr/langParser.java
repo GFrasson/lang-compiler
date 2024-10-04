@@ -1260,9 +1260,9 @@ public class langParser extends Parser {
 				      value = value.substring(0, value.length() - 1);
 
 				      if (value.length() == 1) {
-				        ((ExpContext)_localctx).ast =  new LiteralChar(value.toCharArray()[0], (((ExpContext)_localctx).CHAR!=null?((ExpContext)_localctx).CHAR.getLine():0), (((ExpContext)_localctx).CHAR!=null?((ExpContext)_localctx).CHAR.getCharPositionInLine():0));
+				        ((ExpContext)_localctx).ast =  new LiteralChar(value.toCharArray()[0], value, (((ExpContext)_localctx).CHAR!=null?((ExpContext)_localctx).CHAR.getLine():0), (((ExpContext)_localctx).CHAR!=null?((ExpContext)_localctx).CHAR.getCharPositionInLine():0));
 				      } else if (this.specialCharacters.containsKey(value)) {        
-				        ((ExpContext)_localctx).ast =  new LiteralChar(this.specialCharacters.get(value), (((ExpContext)_localctx).CHAR!=null?((ExpContext)_localctx).CHAR.getLine():0), (((ExpContext)_localctx).CHAR!=null?((ExpContext)_localctx).CHAR.getCharPositionInLine():0));
+				        ((ExpContext)_localctx).ast =  new LiteralChar(this.specialCharacters.get(value), value, (((ExpContext)_localctx).CHAR!=null?((ExpContext)_localctx).CHAR.getLine():0), (((ExpContext)_localctx).CHAR!=null?((ExpContext)_localctx).CHAR.getCharPositionInLine():0));
 				      }
 				    
 				}

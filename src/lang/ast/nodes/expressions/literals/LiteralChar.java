@@ -15,15 +15,21 @@ import lang.visitors.Visitor;
 
 public class LiteralChar extends Expression {
   private char value;
+  private String charText;
 
-  public LiteralChar(char value, int line, int column) {
+  public LiteralChar(char value, String charText, int line, int column) {
     super(line, column);
     
     this.value = value;
+    this.charText = charText;
   }
 
   public char getValue() {
     return value;
+  }
+
+  public String getCharText() {
+    return this.charText;
   }
 
   // @Override

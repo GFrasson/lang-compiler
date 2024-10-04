@@ -7,7 +7,7 @@
 // Template para a tradução de um programa inteiro
 program(name, funcs) ::= <<
 public class <name> {
-    <funcs; separator="\n">
+    <funcs; separator="\n\n">
 }
 >>
 

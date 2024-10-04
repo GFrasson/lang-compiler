@@ -7,6 +7,7 @@
 package lang.utils;
 
 import java.util.TreeMap;
+import java.util.Set;
 
 public class TyEnv<A> {
   private TreeMap<String, A> typeEnv;
@@ -38,5 +39,9 @@ public class TyEnv<A> {
       s += ((String) x[i]) + " : " + (typeEnv.get(x[i])).toString() + "\n";
     }
     return s;
+  }
+
+  public Set<String> getKeys() {
+    return typeEnv.keySet();
   }
 }

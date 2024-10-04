@@ -1,0 +1,100 @@
+/*
+* Equipe:
+* ÁGATA MEIRELES CARVALHO - 202065001C
+* GABRIEL FRASSON COSTA - 202035001
+*/
+
+group python;
+
+// Template para a tradução de um programa inteiro
+program(data_registers, functions) ::= <<
+<data_registers; separator="\n\n\n">
+
+
+<functions; separator="\n\n\n">
+
+
+def division(a, b):
+    return a // b if isinstance(a, int) else a / b
+
+
+if __name__ == '__main__':
+    main0()
+>>
+
+data_register(datatype_name, declarations) ::= <<
+class <datatype_name>:
+    def __init__(self):
+        <declarations; separator="\n">
+>>
+
+declaration(name, type) ::= "self.<name>: <type> = None"
+
+func(name, params, stmt, return_types) ::= <<
+def <name>(<params; separator=", ">)<if(return_types)> -> tuple[<return_types; separator=", ">]<endif>:
+    <stmt>
+>>
+
+param(name, type) ::= "<name>: <type>"
+
+return(expressions) ::= <<
+return (<expressions; separator=", ">,)
+>>
+
+block(stmts) ::= <<
+<stmts; separator="\n">
+>>
+
+iterate(expr, stmt) ::= <<
+for _ in range(<expr>):
+    <stmt>
+>>
+
+if(expr, then, els) ::= <<
+if <expr>:
+    <then>
+<if(els)>else:
+    <els>
+<endif>
+>>
+
+call(name, args) ::= <<<name>(<args; separator=", ">)>>
+call_return(call, index) ::= "<call>[<index>]"
+call_assignment(call, variables) ::= <<<variables; separator=", "> = <call> >>
+
+new_array(size) ::= "list(None for _ in range(<size>))"
+new_data(type) ::= "<type>()"
+
+assignment(var, expr) ::= "<var> = <expr>"
+simple_variable(name) ::= "<name>"
+array_access(array, expr) ::= "<array>[<expr>]"
+field_access(object, field) ::= "<object>.<field>"
+
+array_type(type) ::= "list[<type>]"
+data_type(type) ::= "<type>"
+int_type() ::= "int"
+float_type() ::= "float"
+char_type() ::= "str"
+boolean_type() ::= "bool"
+
+print(expr) ::= "print(<expr>, end='')"
+read(var) ::= "<var> = input()"
+
+boolean_expr(value) ::= "<value>"
+float_expr(value) ::= "<value>"
+int_expr(value) ::= "<value>"
+char_expr(value) ::= "'<value>'"
+null_expr() ::= "None"
+
+mul_expr(left_expr, right_expr) ::= "(<left_expr> * <right_expr>)"
+div_expr(left_expr, right_expr) ::= "(division(<left_expr>, <right_expr>))"
+mod_expr(left_expr, right_expr) ::= "(<left_expr> % <right_expr>)"
+add_expr(left_expr, right_expr) ::= "(<left_expr> + <right_expr>)"
+sub_expr(left_expr, right_expr) ::= "(<left_expr> - <right_expr>)"
+
+lessthan_expr(left_expr, right_expr) ::= "(<left_expr> \< <right_expr>)"
+equals_expr(left_expr, right_expr) ::= "(<left_expr> == <right_expr>)"
+not_equals_expr(left_expr, right_expr) ::= "(<left_expr> != <right_expr>)"
+and_expr(left_expr, right_expr) ::= "(<left_expr> and <right_expr>)"
+not_expr(expr) ::= "not <expr>"
+minus_expr(expr) ::= "-<expr>"

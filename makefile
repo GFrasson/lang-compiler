@@ -37,5 +37,8 @@ run-interpreter:
 run-semantic:
 	java -cp .:$(LIB_DIR)/antlr-4.8-complete.jar:$(OUTPUT_DIR) LangCompiler -tp $(FILE)
 
+run-codegen-python:
+	java -cp .:$(LIB_DIR)/antlr-4.8-complete.jar:$(LIB_DIR)/ST-4.3.1.jar:$(OUTPUT_DIR) LangCompiler -s $(FILE)
+
 clean:
 	rm -rf $(OUTPUT_DIR)/*

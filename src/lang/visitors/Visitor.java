@@ -39,7 +39,7 @@ public abstract class Visitor {
   public abstract void visit(SimpleVariable simpleVariable);
   public abstract void visit(ArrayAccess arrayAccess);
   public abstract void visit(FieldAccess fieldAccess);
-  public abstract void visit(Call cal);
+  public abstract void visit(Call call);
   public abstract void visit(Null nullExpression);
   public abstract void visit(UnaryMinus unaryMinus);
 

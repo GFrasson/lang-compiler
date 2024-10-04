@@ -59,6 +59,10 @@ public class TypeCheckVisitor extends Visitor {
     }
   }
 
+  public TyEnv<LocalEnv<SType>> getEnv() {
+    return this.env;
+  }
+
   public void visit(Program program) {
     ArrayList<Function> functions = new ArrayList<>();
     ArrayList<DataRegister> dataRegisters = new ArrayList<>();
@@ -714,6 +718,11 @@ public class TypeCheckVisitor extends Visitor {
     }
 
     STyFun functionType = (STyFun) temp.getFunctionType();
+
+    if (returnExpression.getExpressions().length != functionType.getReturnTypes().length) {
+      logError.add(returnExpression.getLine() + ", " + returnExpression.getColumn() + "Quantidade de tipos de retorno inconsistente");
+      return;
+    }
 
     for (int i = 0; i < returnExpression.getExpressions().length; i++) {
       Expression expression = returnExpression.getExpressions()[i];

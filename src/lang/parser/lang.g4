@@ -213,9 +213,9 @@ exp returns [Expression ast]
       value = value.substring(0, value.length() - 1);
 
       if (value.length() == 1) {
-        $ast = new LiteralChar(value.toCharArray()[0], $CHAR.line, $CHAR.pos);
+        $ast = new LiteralChar(value.toCharArray()[0], value, $CHAR.line, $CHAR.pos);
       } else if (this.specialCharacters.containsKey(value)) {        
-        $ast = new LiteralChar(this.specialCharacters.get(value), $CHAR.line, $CHAR.pos);
+        $ast = new LiteralChar(this.specialCharacters.get(value), value, $CHAR.line, $CHAR.pos);
       }
     }
   | NEW type (OPEN_BRACKET exp CLOSE_BRACKET)?

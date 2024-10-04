@@ -1,0 +1,52 @@
+data Square {
+  points :: Point[];
+}
+
+data Point {
+  x :: Int;
+  y :: Int;
+}
+
+soma(x :: Int, y :: Int): Int {
+  return x + y;
+}
+
+soma(x :: Int): Int {
+  return x + 1;
+}
+
+somaEMultiplica(x :: Int, y :: Int): Int, Int {
+  return x + y, x * y;
+}
+
+procedimento(x :: Int) {
+  print 'p';
+  print x;
+}
+
+main() {
+  square = new Square;
+
+  size = 10;
+  square.points = new Point[size];
+
+  i = 0;
+  iterate(size) {
+    square.points[i] = new Point;
+    i = i + 1;
+  }
+
+  square.points[5].x = 1;
+
+  print square.points[5].x;
+
+  procedimento(10);
+  
+  print soma(10)[0];
+  print soma(6, 6)[0];
+
+  somaEMultiplica(7, 7)<a, b>;
+  print a;
+  print '\n';
+  print b;
+}

@@ -11,7 +11,11 @@ import lang.ast.nodes.Program;
 import lang.parser.LangParserAdaptor;
 import lang.parser.ParseAdaptor;
 import lang.parser.TestParser;
+import lang.utils.LocalEnv;
+import lang.utils.SType;
+import lang.utils.TyEnv;
 import lang.visitors.InterpretVisitor;
+import lang.visitors.PythonVisitor;
 import lang.visitors.TypeCheckVisitor;
 
 public class LangCompiler {
@@ -71,10 +75,21 @@ public class LangCompiler {
           InterpretVisitor interpretVisitor = new InterpretVisitor();
           program.accept(interpretVisitor);
         }
-      } else if (args[0].equals("-pp")) {
-        // iv = new PPrint();
-        // result.accept(iv);
-        // ((PPrint)iv).print();
+      } else if (args[0].equals("-s")) {
+        TypeCheckVisitor typeCheckVisitor = new TypeCheckVisitor();
+        Program program = (Program) result;
+        program.accept(typeCheckVisitor);
+
+        if (typeCheckVisitor.getNumErrors() > 0) {
+          typeCheckVisitor.printErrors();
+        } else {
+          TyEnv<LocalEnv<SType>> env = typeCheckVisitor.getEnv();
+          String langFileName = args[1];
+          String fileName = langFileName.substring(0, langFileName.length() - 4);
+
+          PythonVisitor pythonVisitor = new PythonVisitor(fileName, env);
+          program.accept(pythonVisitor);
+        }
       }
     } catch (Exception e) {
       e.printStackTrace();

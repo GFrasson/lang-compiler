@@ -104,7 +104,7 @@ Execute o comando na raiz da aplicação
 make
 ```
 
-## Execução - Análise Semântica
+## Execução - Geração de Código
 Execute o comando na raiz da aplicação.
 ```bash
 make run-codegen-python FILE=./testes/semantica/certo/teste0.lan

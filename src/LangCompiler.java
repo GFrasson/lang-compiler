@@ -15,6 +15,7 @@ import lang.utils.LocalEnv;
 import lang.utils.SType;
 import lang.utils.TyEnv;
 import lang.visitors.InterpretVisitor;
+import lang.visitors.JasminVisitor;
 import lang.visitors.PythonVisitor;
 import lang.visitors.TypeCheckVisitor;
 
@@ -89,6 +90,21 @@ public class LangCompiler {
 
           PythonVisitor pythonVisitor = new PythonVisitor(fileName, env);
           program.accept(pythonVisitor);
+        }
+      } else if (args[0].equals("-j")) {
+        TypeCheckVisitor typeCheckVisitor = new TypeCheckVisitor();
+        Program program = (Program) result;
+        program.accept(typeCheckVisitor);
+
+        if (typeCheckVisitor.getNumErrors() > 0) {
+          typeCheckVisitor.printErrors();
+        } else {
+          TyEnv<LocalEnv<SType>> env = typeCheckVisitor.getEnv();
+          String langFileName = args[1];
+          String fileName = langFileName.substring(0, langFileName.length() - 4);
+
+          JasminVisitor jasminVisitor = new JasminVisitor(fileName, env);
+          program.accept(jasminVisitor);
         }
       }
     } catch (Exception e) {

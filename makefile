@@ -40,5 +40,8 @@ run-semantic:
 run-codegen-python:
 	java -cp .:$(LIB_DIR)/antlr-4.8-complete.jar:$(LIB_DIR)/ST-4.3.1.jar:$(OUTPUT_DIR) LangCompiler -s $(FILE)
 
+run-codegen-jasmin:
+	java -cp .:$(LIB_DIR)/antlr-4.8-complete.jar:$(LIB_DIR)/ST-4.3.1.jar:$(OUTPUT_DIR) LangCompiler -j $(FILE)
+
 clean:
 	rm -rf $(OUTPUT_DIR)/*

@@ -40,10 +40,10 @@ public class JasminVisitor extends Visitor {
 
   private int label = 0;
 
-  public JasminVisitor(String fileName, TyEnv<LocalEnv<Pair<SType, Integer>>> env) {
+  public JasminVisitor(String fileName, TyEnv<LocalEnv<SType>> env) {
     groupTemplate = new STGroupFile("./templates/jasmin.stg");
     this.fileName = fileName;
-    this.env = env;
+    // this.env = env;
   }
 
   public void visit(Program program) {
@@ -60,17 +60,21 @@ public class JasminVisitor extends Visitor {
     template.add("data_registers", this.dataRegisters);
 
     System.out.println(template.render());
-    this.writeToFile("Main.j", template.render());
+    this.writeToFile(template);
   }
 
-  private void writeToFile(String fileName, String content) {
+  private void writeToFile(ST template) {
     try {
-      FileWriter fileWriter = new FileWriter(fileName);
-      fileWriter.write(content);
+      String fileNameWithExtension = this.fileName + ".jar";
+      FileWriter fileWriter = new FileWriter(fileNameWithExtension);
+
+      fileWriter.write(template.render());
       fileWriter.close();
-      System.out.println("Arquivo Jasmin gerado com sucesso: " + fileName);
-    } catch (IOException e) {
-      e.printStackTrace();
+
+      System.out.println("Successfully wrote to file " + fileNameWithExtension);
+    } catch (IOException exception) {
+      System.out.println("An error occurred on file writing.");
+      exception.printStackTrace();
     }
   }
 
@@ -181,79 +185,112 @@ public class JasminVisitor extends Visitor {
     this.expression = template;
   }
 
-  // Não revisado a partir daqui
-
   public void visit(ArrayAccess arrayAccess) {
-    ST template = groupTemplate.getInstanceOf("array_access");
+    ST template = groupTemplate.getInstanceOf("iaaccess");
 
     arrayAccess.getArray().accept(this);
     template.add("array", this.expression);
 
-    arrayAccess.getIndex().accept(this);
-    template.add("expr", this.expression);
+    Pair<SType, Integer> pair = local.get(this.expression.render());
+		SType sType = pair.first();
 
+    if (sType instanceof STyArr) {
+			if (((STyArr) sType).getArg() instanceof STyInt) {
+        template = groupTemplate.getInstanceOf("iaaccess");
+
+				// if (arrayAccess.getIndex().length > 0)
+        //   template = groupTemplate.getInstanceOf("iaaccess");
+				// else
+        //   template = groupTemplate.getInstanceOf("iaload");
+			}
+      arrayAccess.getIndex().accept(this);
+      template.add("expr", this.expression);
+		}
+    
+		template.add("num", pair.second());
     this.expression = template;
   }
 
   public void visit(FieldAccess fieldAccess) {
-    ST template = groupTemplate.getInstanceOf("field_access");
+    // ST template = groupTemplate.getInstanceOf("field_access");
     
-    fieldAccess.getObject().accept(this);
-    template.add("object", this.expression);
-    template.add("field", fieldAccess.getField());
+    // fieldAccess.getObject().accept(this);
+    // template.add("object", this.expression);
+    // template.add("field", fieldAccess.getField());
 
-    this.expression = template;
+    // this.expression = template;
   }
 
   public void visit(Call call) {
-    ST callTemplate = groupTemplate.getInstanceOf("call");
+    ST aux = groupTemplate.getInstanceOf("call");
+		
+    aux.add("class", fileName);
+		aux.add("name", call.getFunctionName() + call.getArguments().length);
 
-    String functionSignature = call.getFunctionName() + call.getArguments().length;
-    callTemplate.add("name", functionSignature);
-
-    for (Expression expression : call.getArguments()) {
-      expression.accept(this);
-      callTemplate.add("args", this.expression);
+		SType[] return_types = ((STyFun) env.get(call.getFunctionName()).getFunctionType()).getReturnTypes();
+		SType[] parameter_types = ((STyFun) env.get(call.getFunctionName()).getFunctionType()).getParameterTypes();
+		
+    // for (int i = 0; i < return_types.length; i++) {
+    for (int i = 0; i < 1; i++) {
+      processSType(return_types[i]);
+      aux.add("return", this.type);
     }
 
-    if (call.getReturnIndex() != null) {
-      ST callReturnTemplate = groupTemplate.getInstanceOf("call_return");
-      callReturnTemplate.add("call", callTemplate);
-      
-      call.getReturnIndex().accept(this);
-      callReturnTemplate.add("index", this.expression);
+		for (int i = 0; i < parameter_types.length - 1; ++i) {
+			processSType(parameter_types[i]);
+			aux.add("type", this.type);
+		}
 
-      this.expression = callReturnTemplate;
-      return;
-    }
+		for (Expression exp : call.getArguments()) {
+			exp.accept(this);
+			aux.add("args", this.expression);
+		}
 
-    if (call.getVariables() != null && call.getVariables().length > 0) {
-      ST callAssignmentTemplate = groupTemplate.getInstanceOf("call_assignment");
-      callAssignmentTemplate.add("call", callTemplate);
-
-      List<ST> variables = new ArrayList<>();
-      for (Variable variable : call.getVariables()) {
-        variable.accept(this);
-        variables.add(this.expression);
-      }
-
-      callAssignmentTemplate.add("variables", variables);
-
-      this.stmt = callAssignmentTemplate;
-      return;
-    }
-
-    this.stmt = callTemplate;
+		this.expression = aux;
   }
 
   public void visit(Assignment assignment) {
-    this.stmt = groupTemplate.getInstanceOf("assignment");
+    Variable variable = assignment.getID();
+    
+    if (variable instanceof SimpleVariable) {
+      SimpleVariable simpleVariable = (SimpleVariable)variable;
+      Pair<SType, Integer> pair = local.get(simpleVariable.getName());
+      SType sType = pair.first();
 
-    assignment.getID().accept(this);
-    this.stmt.add("var", this.expression);
+			this.stmt = groupTemplate.getInstanceOf("istore");
+      
+      stmt.add("num", pair.second());
+
+    } else if (variable instanceof ArrayAccess) {
+      ArrayAccess arrayAccess = (ArrayAccess)variable;
+
+      arrayAccess.getArray().accept(this);
+      ST array = this.expression;
+
+      Pair<SType, Integer> pair = local.get(array.render());
+      SType sType = pair.first();
+
+      if (((STyArr) sType).getArg() instanceof STyInt)
+				this.stmt = groupTemplate.getInstanceOf("iastore");
+
+      
+      arrayAccess.getIndex().accept(this);
+			this.stmt.add("index", this.expression);
+    } else if (variable instanceof FieldAccess) {
+      // FieldAccess fieldAccess = (FieldAccess)variable;
+
+      // fieldAccess.getObject().accept(this);
+      
+      // @SuppressWarnings("unchecked")
+      // HashMap<String, Object> dataRegister = (HashMap<String, Object>)operands.pop();
+      
+      // String field = fieldAccess.getField();
+
+      // dataRegister.put(field, expressionValue);
+    }
 
     assignment.getExpression().accept(this);
-    this.stmt.add("expr", this.expression);
+    stmt.add("expr", this.expression);
   }
 
   public void visit(Block block) {
@@ -272,25 +309,29 @@ public class JasminVisitor extends Visitor {
   }
 
   public void visit(If ifExpression) {
-    ST template = groupTemplate.getInstanceOf("if");
-
+    ST aux = groupTemplate.getInstanceOf("if");
+    
+		aux.add("num", label++);
+		
     ifExpression.getCondition().accept(this);
-    template.add("expr", this.expression);
-
+		aux.add("expr", this.expression);
+		
     ifExpression.getThen().accept(this);
-    template.add("then", this.stmt);
-
-    Node node = ifExpression.getElse();
-    if (node != null) {
-      node.accept(this);
-      template.add("els", this.stmt);
-    }
-
-    this.stmt = template;
+		aux.add("thn", this.stmt);
+		
+    Node n = ifExpression.getElse();
+		if (n != null) {
+			n.accept(this);
+			aux.add("els", this.stmt);
+		}
+		
+    this.stmt = aux;
   }
 
   public void visit(Iterate iterate) {
     ST aux = groupTemplate.getInstanceOf("iterate");
+
+		aux.add("num", label++);
     
     iterate.getCondition().accept(this);
     aux.add("expr", this.expression);
@@ -302,7 +343,7 @@ public class JasminVisitor extends Visitor {
   }
 
   public void visit(Print print) {
-    this.stmt = groupTemplate.getInstanceOf("print");
+    this.stmt = groupTemplate.getInstanceOf("iprint");
     print.getExpression().accept(this);
     this.stmt.add("expr", this.expression);
   }
@@ -314,45 +355,30 @@ public class JasminVisitor extends Visitor {
   }
 
   public void visit(Function function) {
-    ST template = groupTemplate.getInstanceOf("func");
+		ST fun = groupTemplate.getInstanceOf("func");
+		fun.add("name", function.getID());
 
-    System.out.println(template);
+		local = env.get(function.getID());
 
-    template.add("name", function.getSignature());
+		fun.add("decls", local.getKeys().size()); // número de váriaveis locais, incluíndo os parâmetros
+		fun.add("stack", 100); // tamanho máximo da pilha. Coloquei 10, mas tem que calcular baseado no tamanho
+													// das subexpressões
 
-    LocalEnv<SType> local = env.get(function.getSignature());
-    Set<String> keys = local.getKeys();
-
-    List<ST> returnTypes = new ArrayList<>();
-    for (Type returnType : function.getReturnTypes()) {
-      returnType.accept(this);
-      returnTypes.add(this.type);
+    if (function.getReturnTypes().length > 0) {
+      function.getReturnTypes()[0].accept(this);
+      fun.add("return", this.type);
     }
 
-    template.add("return_types", returnTypes);
+		this.params = new ArrayList<ST>();
+		for (Parameter p : function.getParameters()) {
+			p.accept(this);
+		}
+		fun.add("params", this.params);
 
-    this.params = new ArrayList<ST>();
-    for (Parameter parameter : function.getParameters()) {
-      keys.remove(parameter.getName());
-      parameter.accept(this);
-    }
+		function.getBody().accept(this);
+		fun.add("stmt", this.stmt);
 
-    template.add("params", this.params);
-
-    for (String key : keys) {
-      ST declaration = groupTemplate.getInstanceOf("param");
-      declaration.add("name", key);
-
-      SType sType = local.get(key);
-      this.processSType(sType);
-
-      declaration.add("type", this.type);
-    }
-
-    function.getBody().accept(this);
-    template.add("stmt", stmt);
-
-    this.functions.add(template);
+		this.functions.add(fun);
   }
 
   private void processSType(SType sType) {
@@ -397,9 +423,6 @@ public class JasminVisitor extends Visitor {
     if (instance.getSize() != null) {
       ST template = groupTemplate.getInstanceOf("new_array");
 
-      instance.getSize().accept(this);
-      template.add("size", this.expression);
-
       this.expression = template;
     } else if (instance.getType() instanceof DataType) {
       this.expression = groupTemplate.getInstanceOf("new_data");
@@ -410,25 +433,15 @@ public class JasminVisitor extends Visitor {
   }
 
   public void visit(Return returnCommand) {
-    this.stmt = groupTemplate.getInstanceOf("return");
-    
-    this.returnExpressions = new ArrayList<ST>();
-    for (Expression expression : returnCommand.getExpressions()) {
-      expression.accept(this);
-      this.returnExpressions.add(this.expression);
-    }
-    
-    this.stmt.add("expressions", this.returnExpressions);
+    returnCommand.getExpressions()[0].accept(this);
+
+		this.stmt = groupTemplate.getInstanceOf("ireturn");
+		this.stmt.add("expr", this.expression);
   }
 
   public void visit(Parameter parameter) {
-    ST param = groupTemplate.getInstanceOf("param");
-
     parameter.getType().accept(this);
-    param.add("type", this.type);
-
-    param.add("name", parameter.getName());
-    this.params.add(param);
+    this.params.add(this.type);
   }
 
   public void visit(IntType intType) {

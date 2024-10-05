@@ -34,9 +34,8 @@ int_type() ::= "I"
 float_type() ::= "F"
 boolean_type() ::= "Z"
 
-stmt_list(stmt1, stmt2) ::= <<
-<stmt1>
-<stmt2>
+block(stmts) ::= <<
+<stmts; separator="\n">
 >>
 
 iprint(expr) ::= <<
@@ -50,7 +49,7 @@ ireturn(expr) ::= <<
 ireturn
 >>
 
-while(num,expr, stmt) ::= <<
+iterate(num, expr, stmt) ::= <<
 #<num>:
 <expr>
 ifeq #<num>#end
@@ -75,6 +74,10 @@ iarray(num, expr) ::= <<
 <expr>
 newarray int
 astore <num>
+>>
+
+new_array() ::= <<
+newarray int
 >>
 
 call(class, name, type, return, args) ::= <<

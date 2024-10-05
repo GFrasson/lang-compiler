@@ -1,0 +1,198 @@
+/*
+* Equipe:
+* ÁGATA MEIRELES CARVALHO - 202065001C
+* GABRIEL FRASSON COSTA - 202035001
+*/
+
+group jasmin;
+
+program(name, data_registers, funcs) ::= <<
+.source <name>
+.class public <name>
+.super java/lang/Object
+    <data_registers; separator="\n\n">
+
+    <funcs; separator="\n\n">
+
+    .method public static main([Ljava/lang/String;)V
+        .limit stack 1
+        invokestatic <name>/main0()I
+        return
+    .end method
+>>
+
+func(return, name, params, decls, stack, stmt) ::= <<
+.method static <name>(<params>)<return>
+    .limit stack <stack>
+    .limit locals <decls>
+    <stmt>
+.end method
+>>
+
+array_type(type) ::= "[<type>"
+int_type() ::= "I"
+float_type() ::= "F"
+boolean_type() ::= "Z"
+
+stmt_list(stmt1, stmt2) ::= <<
+<stmt1>
+<stmt2>
+>>
+
+iprint(expr) ::= <<
+getstatic java/lang/System/out Ljava/io/PrintStream;
+<expr>
+invokevirtual java/io/PrintStream/println(I)V
+>>
+
+ireturn(expr) ::= <<
+<expr>
+ireturn
+>>
+
+while(num,expr, stmt) ::= <<
+#<num>:
+<expr>
+ifeq #<num>#end
+<stmt>
+goto #<num>
+#<num>#end:
+nop
+>>
+
+if(num, expr, thn, els) ::= <<
+<expr>
+ifeq #<num>
+<thn>
+goto #<num>#end
+#<num>:
+<els>
+#<num>#end:
+nop
+>>
+
+iarray(num, expr) ::= <<
+<expr>
+newarray int
+astore <num>
+>>
+
+call(class, name, type, return, args) ::= <<
+<args; separator="\n">
+invokestatic <class>/<name>(<type>)<return>
+>>
+
+istore(num, expr) ::= <<
+<expr>
+istore <num>
+>>
+
+iastore(num, index, expr) ::= <<
+aload <num>
+<index>
+<expr>
+iastore
+>>
+
+iaccess(num) ::= "iload <num>"
+
+iaaccess(num, expr) ::= <<
+aload <num>
+<expr>
+iaload
+>>
+
+iaload(num) ::= <<
+aload <num>
+>>
+
+imul(left_expr, right_expr) ::= <<
+<left_expr>
+<right_expr>
+imul
+>>
+
+idiv(left_expr, right_expr) ::= <<
+<left_expr>
+<right_expr>
+idiv
+>>
+
+imod(left_expr, right_expr) ::= <<
+<left_expr>
+<right_expr>
+irem
+>>
+
+iadd(left_expr, right_expr) ::= <<
+<left_expr>
+<right_expr>
+iadd
+>>
+
+isub(left_expr, right_expr) ::= <<
+<left_expr>
+<right_expr>
+isub
+>>
+
+ilt_expr(num, left_expr, right_expr) ::= <<
+<right_expr>
+<left_expr>
+isub
+ifgt #<num>
+iconst_0
+goto #<num>#<num>
+#<num>:
+iconst_1
+#<num>#<num>:
+>>
+
+iequals_expr(num, left_expr, right_expr) ::= <<
+<left_expr>
+<right_expr>
+isub
+ifeq #<num>
+iconst_0
+goto #<num>#<num>
+#<num>:
+iconst_1
+#<num>#<num>:
+>>
+
+inot_equals_expr(num, left_expr, right_expr) ::= <<
+<left_expr>
+<right_expr>
+isub
+ifeq #<num>
+iconst_1
+goto #<num>#<num>
+#<num>:
+iconst_0
+#<num>#<num>:
+>>
+
+not_expr(expr) ::= <<
+<expr>
+iconst_1
+ixor
+>>
+
+minus_expr(expr) ::= <<
+iconst_0
+<expr>
+isub
+>>
+
+and_expr(left_expr, right_expr) ::= <<
+<left_expr>
+<right_expr>
+iand
+>>
+
+boolean_true() ::= "iconst_1"
+boolean_false() ::= "iconst_0"
+null_expr(value) ::= ""
+float_expr(value) ::= "ldc <value>"
+int_expr(value) ::= "sipush <value>"
+char_expr(value) ::= ""

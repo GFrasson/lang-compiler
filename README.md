@@ -90,3 +90,23 @@ Execute o comando na raiz da aplicação.
 make run-semantic FILE=./testes/semantica/certo/teste0.lan
 ```
  - OBS: Substitua o caminho do arquivo para testar outros exemplos
+
+
+# Geração de Código
+A geração de código "source to source" foi feita no visitor PythonVisitor com a linguagem Python como destino. A tentativa de geração de código "source to jasmin" foi feita no visitor JasminVisitor. Devido ao prazo e outras situações decorrentes do fim do período, apenas a ideia da geração de código foi desenvolvida para os comandos e expressões principais, mas o código não é gerado corretamente, a começar pela alteração que seria necessária no TypeCheckVisitor para guardar um valor numérico para cada variável, até alguns comandos e peculiaridades da linguagem lang que não foram desenvolvidos. Entretanto, a lógica geral de comandos e expressões mais simples foi desenvolvida, a fim de estudos e aprendizado sobre o processo.
+
+## Versão do JAVA
+**11.0.22**
+
+## Compilação
+Execute o comando na raiz da aplicação
+```bash
+make
+```
+
+## Execução - Análise Semântica
+Execute o comando na raiz da aplicação.
+```bash
+make run-codegen-python FILE=./testes/semantica/certo/teste0.lan
+```
+ - OBS: Substitua o caminho do arquivo para testar outros exemplos
